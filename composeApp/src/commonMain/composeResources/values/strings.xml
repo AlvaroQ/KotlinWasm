@@ -41,6 +41,7 @@
     <string name="body_two_paragraph_one_seven"> for its error monitoring, user authentication, remote config, database management and messaging capabilities.</string>
 
     <string name="body_two_paragraph_two">Libraries are fundamental in my work. I especially like OkHttp, Retrofit, Flows and ARROW. Lately, I've been leaning towards Glide or Coil instead of Picasso. It is important to comply with the Material Design standard to offer a clean and fluid user experience, making use of native or Lottie animations.</string>
+    <string name="body_two_paragraph_three">Gradle's Kotlin DSL with version catalog as an alternative to Groovy DSL, alongside code analysis tools.</string>
 
     <string name="title_company">Companies</string>
     <string name="title_portfolio">Portfolio</string>

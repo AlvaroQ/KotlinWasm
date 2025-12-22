@@ -104,13 +104,13 @@ fun SectionResumen(screenSize: MutableState<Pair<Int, Int>>, horizontalMarginDes
 
         if(screenSize.value.first > 1200f) {
             Image(
-                painter = painterResource(Res.drawable.business_low),
+                painter = painterResource(Res.drawable.business_front),
                 contentDescription = stringResource(Res.string.content_description),
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(start = 60.dp)
+                    .height(240.dp)
+                    .padding(start = 60.dp, end = 40.dp)
             )
         }
     }
@@ -125,18 +125,19 @@ fun SectionResumen(screenSize: MutableState<Pair<Int, Int>>, horizontalMarginDes
 
         if(screenSize.value.first > 1200f) {
             Image(
-                painter = painterResource(Res.drawable.business_front),
+                painter = painterResource(Res.drawable.business_low),
                 contentDescription = stringResource(Res.string.content_description),
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .height(250.dp)
-                    .padding(end = 60.dp)
+                    .height(240.dp)
+                    .padding(start = 60.dp, end = 60.dp)
             )
         }
         Column(
             modifier = Modifier
-                .weight(4f),
+                .weight(4f)
+                .padding(top = 20.dp),
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
@@ -162,6 +163,13 @@ fun SectionResumen(screenSize: MutableState<Pair<Int, Int>>, horizontalMarginDes
             Text(
                 modifier = Modifier.padding(top = 20.dp),
                 text = stringResource(Res.string.body_two_paragraph_two),
+                color = Color.Black,
+                style = MaterialTheme.typography.body1
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 20.dp),
+                text = stringResource(Res.string.body_two_paragraph_three),
                 color = Color.Black,
                 style = MaterialTheme.typography.body1
             )
