@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,27 +31,83 @@ import kotlin.random.Random
 
 @Composable
 fun SectionHeader() {
+    val screenWidth = LocalScreenWidth.current
+    val isMobile = screenWidth < 900
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp)
+            .height(if (isMobile) 400.dp else 500.dp)
             .background(CyberpunkColors.DarkBackground)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = if (isMobile) 20.dp else 40.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "[ SYSTEM INITIALIZED ]", style = MaterialTheme.typography.caption, color = CyberpunkColors.NeonGreen)
-            Spacer(modifier = Modifier.height(24.dp))
-            GlitchText(text = "ALVARO QUINTANA", style = MaterialTheme.typography.h1.copy(fontSize = 64.sp, fontWeight = FontWeight.Bold), primaryColor = CyberpunkColors.TextPrimary)
-            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "[ SYSTEM INITIALIZED ]",
+                style = MaterialTheme.typography.caption,
+                color = CyberpunkColors.NeonGreen
+            )
+            Spacer(modifier = Modifier.height(if (isMobile) 16.dp else 24.dp))
+            GlitchText(
+                text = "ALVARO QUINTANA",
+                style = MaterialTheme.typography.h1.copy(
+                    fontSize = if (isMobile) 32.sp else 64.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                primaryColor = CyberpunkColors.TextPrimary
+            )
+            Spacer(modifier = Modifier.height(if (isMobile) 16.dp else 24.dp))
             Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "> ", style = MaterialTheme.typography.h3, color = CyberpunkColors.NeonCyan)
-                TypewriterText(text = "MOBILE & AI SPECIALIST", style = MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Bold), color = CyberpunkColors.NeonCyan, typingSpeed = 80L)
+                Text(
+                    text = "> ",
+                    style = if (isMobile) MaterialTheme.typography.h5 else MaterialTheme.typography.h3,
+                    color = CyberpunkColors.NeonCyan
+                )
+                TypewriterText(
+                    text = "MOBILE & AI SPECIALIST",
+                    style = (if (isMobile) MaterialTheme.typography.h5 else MaterialTheme.typography.h3).copy(fontWeight = FontWeight.Bold),
+                    color = CyberpunkColors.NeonCyan,
+                    typingSpeed = 80L
+                )
             }
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(text = "Android | iOS | KMP | AI Agent Orchestration", style = MaterialTheme.typography.h5, color = CyberpunkColors.TextSecondary, textAlign = TextAlign.Center)
+            Spacer(modifier = Modifier.height(if (isMobile) 20.dp else 32.dp))
+            Text(
+                text = "Android | iOS | KMP | AI Agent Orchestration",
+                style = if (isMobile) MaterialTheme.typography.body1 else MaterialTheme.typography.h5,
+                color = CyberpunkColors.TextSecondary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(if (isMobile) 24.dp else 40.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Built with ",
+                    style = MaterialTheme.typography.caption.copy(
+                        fontSize = if (isMobile) 11.sp else 13.sp
+                    ),
+                    color = CyberpunkColors.NeonMagenta.copy(alpha = 0.8f)
+                )
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "love",
+                    tint = CyberpunkColors.NeonMagenta,
+                    modifier = Modifier.size(if (isMobile) 14.dp else 16.dp)
+                )
+                Text(
+                    text = " using Kotlin",
+                    style = MaterialTheme.typography.caption.copy(
+                        fontSize = if (isMobile) 11.sp else 13.sp
+                    ),
+                    color = CyberpunkColors.NeonMagenta.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }

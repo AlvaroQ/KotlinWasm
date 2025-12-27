@@ -20,20 +20,25 @@ import theme.CyberpunkColors
 fun SectionSkills() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
+    // Usar columna hasta pantallas muy grandes (>1400px)
+    val useColumnLayout = screenWidth < 1400
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(CyberpunkColors.DarkSurface)
-            .padding(vertical = if (isMobile) 40.dp else 80.dp, horizontal = if (isMobile) 20.dp else 60.dp),
+            .padding(vertical = if (isMobile) 40.dp else 80.dp, horizontal = if (isMobile) 20.dp else 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SectionTitle(title = "SKILLS MATRIX", color = CyberpunkColors.NeonMagenta)
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
-        if (isMobile) {
+        if (useColumnLayout) {
+            // Column layout - vertical stack
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 700.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -47,7 +52,7 @@ fun SectionSkills() {
                         "iOS / Swift" to 0.70f,
                         "KMP" to 0.88f
                     ),
-                    isMobile = true
+                    useFullWidth = true
                 )
 
                 SkillCategory(
@@ -60,7 +65,7 @@ fun SectionSkills() {
                         "MCP Protocol" to 0.80f,
                         "Prompt Engineering" to 0.88f
                     ),
-                    isMobile = true
+                    useFullWidth = true
                 )
 
                 SkillCategory(
@@ -72,15 +77,17 @@ fun SectionSkills() {
                         "Git / CI-CD" to 0.90f,
                         "REST / GraphQL" to 0.92f
                     ),
-                    isMobile = true
+                    useFullWidth = true
                 )
             }
         } else {
+            // Row layout - cards con weight para adaptarse
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 SkillCategory(
+                    modifier = Modifier.weight(1f),
                     title = "Mobile Development",
                     color = CyberpunkColors.NeonGreen,
                     skills = listOf(
@@ -93,6 +100,7 @@ fun SectionSkills() {
                 )
 
                 SkillCategory(
+                    modifier = Modifier.weight(1f),
                     title = "AI / ML Orchestration",
                     color = CyberpunkColors.NeonMagenta,
                     skills = listOf(
@@ -105,6 +113,7 @@ fun SectionSkills() {
                 )
 
                 SkillCategory(
+                    modifier = Modifier.weight(1f),
                     title = "Backend / Tools",
                     color = CyberpunkColors.NeonCyan,
                     skills = listOf(
@@ -121,14 +130,15 @@ fun SectionSkills() {
 
 @Composable
 private fun SkillCategory(
+    modifier: Modifier = Modifier,
     title: String,
     color: Color,
     skills: List<Pair<String, Float>>,
-    isMobile: Boolean = false
+    useFullWidth: Boolean = false
 ) {
     NeonCard(
         glowColor = color,
-        modifier = if (isMobile) Modifier.fillMaxWidth() else Modifier.width(350.dp)
+        modifier = modifier.then(if (useFullWidth) Modifier.fillMaxWidth() else Modifier)
     ) {
         Text(
             text = title,

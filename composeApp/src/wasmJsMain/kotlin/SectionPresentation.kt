@@ -5,8 +5,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,12 +40,12 @@ import theme.CyberpunkColors
 fun SectionPresentation() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
-    val isTablet = screenWidth in 900..1200
+    // Usar columna hasta pantallas muy grandes (>1600px)
+    val useColumnLayout = screenWidth < 1600
 
     val horizontalPadding = when {
         isMobile -> 20.dp
-        isTablet -> 40.dp
-        else -> 60.dp
+        else -> 40.dp
     }
 
     Column(
@@ -50,12 +55,13 @@ fun SectionPresentation() {
             .padding(vertical = if (isMobile) 40.dp else 80.dp, horizontal = horizontalPadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Main presentation card - Column on mobile, Row on desktop
-        if (isMobile) {
-            // Mobile layout: vertical stack
+        // Main presentation card
+        if (useColumnLayout) {
+            // Column layout: vertical stack
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .widthIn(max = 800.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(CyberpunkColors.DarkCard)
                     .border(
@@ -68,18 +74,18 @@ fun SectionPresentation() {
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
-                    .padding(24.dp),
+                    .padding(if (isMobile) 24.dp else 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 // Profile image
-                ProfileImageWithGlow()
+                ProfileImageWithGlow(isMobile = isMobile)
 
                 // Bio content
-                PresentationBioContent(isMobile = true)
+                PresentationBioContent(isMobile = isMobile)
             }
         } else {
-            // Desktop layout: horizontal
+            // Row layout: horizontal for large screens
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,78 +125,69 @@ fun SectionPresentation() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 24.dp else 40.dp))
 
-        // Highlights row - wrap on mobile
-        if (isMobile) {
+        // Highlights row
+        if (useColumnLayout) {
+            // Column layout for stats
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 500.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                 ) {
                     StatCard(
+                        modifier = Modifier.weight(1f),
                         value = "+12",
                         label = "YEARS",
                         sublabel = "EXPERIENCE",
-                        color = CyberpunkColors.NeonGreen,
-                        isMobile = true
+                        color = CyberpunkColors.NeonGreen
                     )
                     StatCard(
+                        modifier = Modifier.weight(1f),
                         value = "+7",
                         label = "YEARS",
                         sublabel = "LEADING B-FY",
-                        color = CyberpunkColors.NeonCyan,
-                        isMobile = true
+                        color = CyberpunkColors.NeonCyan
                     )
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    StatCard(
-                        value = "3",
-                        label = "PLATFORMS",
-                        sublabel = "ANDROID iOS KMP",
-                        color = CyberpunkColors.NeonMagenta,
-                        isMobile = true
-                    )
-                    StatCard(
-                        value = "5",
-                        label = "TARGETS",
-                        sublabel = "DESKTOP WASM WEB",
-                        color = CyberpunkColors.NeonPurple,
-                        isMobile = true
-                    )
-                }
+                StatCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = "4",
+                    label = "PLATFORMS",
+                    sublabel = "ANDROID iOS WEB DESKTOP",
+                    color = CyberpunkColors.NeonMagenta
+                )
             }
         } else {
+            // Row layout for large screens - cards con weight para adaptarse
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 StatCard(
+                    modifier = Modifier.weight(1f),
                     value = "+12",
                     label = "YEARS",
                     sublabel = "EXPERIENCE",
                     color = CyberpunkColors.NeonGreen
                 )
                 StatCard(
+                    modifier = Modifier.weight(1f),
                     value = "+7",
                     label = "YEARS",
                     sublabel = "LEADING B-FY",
                     color = CyberpunkColors.NeonCyan
                 )
                 StatCard(
-                    value = "3",
+                    modifier = Modifier.weight(1f),
+                    value = "4",
                     label = "PLATFORMS",
-                    sublabel = "ANDROID iOS KMP",
+                    sublabel = "ANDROID iOS WEB DESKTOP",
                     color = CyberpunkColors.NeonMagenta
-                )
-                StatCard(
-                    value = "5",
-                    label = "TARGETS",
-                    sublabel = "DESKTOP WASM WEB",
-                    color = CyberpunkColors.NeonPurple
                 )
             }
         }
@@ -200,22 +197,25 @@ fun SectionPresentation() {
 @Composable
 private fun PresentationBioContent(isMobile: Boolean = false) {
     Column(
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(if (isMobile) 12.dp else 16.dp),
         horizontalAlignment = if (isMobile) Alignment.CenterHorizontally else Alignment.Start
     ) {
                 Text(
                     text = "HI, I'M ALVARO",
-                    style = MaterialTheme.typography.h3.copy(
+                    style = (if (isMobile) MaterialTheme.typography.h4 else MaterialTheme.typography.h3).copy(
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 3.sp
+                        letterSpacing = if (isMobile) 2.sp else 3.sp
                     ),
-                    color = CyberpunkColors.NeonCyan
+                    color = CyberpunkColors.NeonCyan,
+                    textAlign = if (isMobile) TextAlign.Center else TextAlign.Start
                 )
 
                 Text(
                     text = "Senior Mobile Developer & AI Specialist",
-                    style = MaterialTheme.typography.h5,
-                    color = CyberpunkColors.TextPrimary
+                    style = if (isMobile) MaterialTheme.typography.h6 else MaterialTheme.typography.h5,
+                    color = CyberpunkColors.TextPrimary,
+                    textAlign = if (isMobile) TextAlign.Center else TextAlign.Start
                 )
 
                 // Social Links
@@ -226,12 +226,14 @@ private fun PresentationBioContent(isMobile: Boolean = false) {
                     SocialLinkButton(
                         text = "LinkedIn",
                         url = "linkedin.com/in/alvaro-quintana-palacios",
-                        color = Color(0xFF0A66C2)
+                        color = Color(0xFF0A66C2),
+                        icon = Icons.Filled.Person
                     )
                     SocialLinkButton(
                         text = "GitHub",
                         url = "github.com/AlvaroQ",
-                        color = CyberpunkColors.TextPrimary
+                        color = CyberpunkColors.TextPrimary,
+                        icon = Icons.Filled.Build
                     )
                 }
 
@@ -390,7 +392,7 @@ private fun PresentationBioContent(isMobile: Boolean = false) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun ProfileImageWithGlow() {
+private fun ProfileImageWithGlow(isMobile: Boolean = false) {
     val infiniteTransition = rememberInfiniteTransition()
 
     val glowAlpha by infiniteTransition.animateFloat(
@@ -404,6 +406,7 @@ private fun ProfileImageWithGlow() {
 
     Box(
         modifier = Modifier
+            .then(if (isMobile) Modifier.fillMaxWidth() else Modifier)
             .drawBehind {
                 // Rectangular glow effect
                 drawRoundRect(
@@ -417,17 +420,24 @@ private fun ProfileImageWithGlow() {
                     cornerRadius = CornerRadius(24.dp.toPx())
                 )
             }
-            .padding(16.dp),
+            .padding(if (isMobile) 8.dp else 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(Res.drawable.business_front),
             contentDescription = "Alvaro Quintana",
-            modifier = Modifier
-                .width(240.dp)
-                .height(320.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Fit
+            modifier = if (isMobile) {
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(0.75f) // 3:4 aspect ratio
+                    .clip(RoundedCornerShape(12.dp))
+            } else {
+                Modifier
+                    .width(240.dp)
+                    .height(320.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            },
+            contentScale = ContentScale.Crop
         )
     }
 }
@@ -481,49 +491,77 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                 ),
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(horizontal = 32.dp, vertical = 16.dp)
+            .padding(horizontal = if (isMobile) 16.dp else 32.dp, vertical = if (isMobile) 12.dp else 16.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            if (isMobile) {
+                // Mobile: stacked layout
                 Text(
-                    text = "//",
-                    style = MaterialTheme.typography.h5,
-                    color = CyberpunkColors.NeonMagenta
-                )
-                Text(
-                    text = "THIS SITE IS 100% BUILT WITH",
-                    style = MaterialTheme.typography.body1.copy(
+                    text = "// THIS SITE IS 100% BUILT WITH",
+                    style = MaterialTheme.typography.caption.copy(
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.sp
+                        letterSpacing = 1.sp
                     ),
-                    color = CyberpunkColors.TextPrimary
+                    color = CyberpunkColors.TextPrimary,
+                    textAlign = TextAlign.Center
                 )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "//",
+                        style = MaterialTheme.typography.h5,
+                        color = CyberpunkColors.NeonMagenta
+                    )
+                    Text(
+                        text = "THIS SITE IS 100% BUILT WITH",
+                        style = MaterialTheme.typography.body1.copy(
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.sp
+                        ),
+                        color = CyberpunkColors.TextPrimary
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(if (isMobile) 4.dp else 8.dp))
 
             Text(
                 text = "KOTLIN MULTIPLATFORM WASM",
-                style = MaterialTheme.typography.h4.copy(
+                style = (if (isMobile) MaterialTheme.typography.h6 else MaterialTheme.typography.h4).copy(
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 4.sp
+                    letterSpacing = if (isMobile) 1.sp else 4.sp
                 ),
-                color = CyberpunkColors.NeonCyan
+                color = CyberpunkColors.NeonCyan,
+                textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(if (isMobile) 6.dp else 8.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TechBadge("Compose", CyberpunkColors.NeonGreen)
-                TechBadge("Kotlin", CyberpunkColors.NeonMagenta)
-                TechBadge("WebAssembly", CyberpunkColors.NeonCyan)
+            if (isMobile) {
+                // Mobile: wrap badges
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TechBadge("Compose", CyberpunkColors.NeonGreen)
+                        TechBadge("Kotlin", CyberpunkColors.NeonMagenta)
+                    }
+                    TechBadge("WebAssembly", CyberpunkColors.NeonCyan)
+                }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    TechBadge("Compose", CyberpunkColors.NeonGreen)
+                    TechBadge("Kotlin", CyberpunkColors.NeonMagenta)
+                    TechBadge("WebAssembly", CyberpunkColors.NeonCyan)
+                }
             }
         }
     }
@@ -550,7 +588,7 @@ private fun TechBadge(text: String, color: Color) {
 }
 
 @Composable
-private fun SocialLinkButton(text: String, url: String, color: Color) {
+private fun SocialLinkButton(text: String, url: String, color: Color, icon: ImageVector? = null) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
@@ -562,6 +600,14 @@ private fun SocialLinkButton(text: String, url: String, color: Color) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = text,
+                    tint = color,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
             Text(
                 text = text,
                 style = MaterialTheme.typography.body2.copy(
@@ -569,22 +615,17 @@ private fun SocialLinkButton(text: String, url: String, color: Color) {
                 ),
                 color = color
             )
-            Text(
-                text = "→",
-                style = MaterialTheme.typography.body2,
-                color = color.copy(alpha = 0.7f)
-            )
         }
     }
 }
 
 @Composable
 private fun StatCard(
+    modifier: Modifier = Modifier,
     value: String,
     label: String,
     sublabel: String,
-    color: Color,
-    isMobile: Boolean = false
+    color: Color
 ) {
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -598,8 +639,7 @@ private fun StatCard(
     )
 
     Column(
-        modifier = Modifier
-            .width(if (isMobile) 140.dp else 200.dp)
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(CyberpunkColors.DarkCard)
             .border(
@@ -607,13 +647,12 @@ private fun StatCard(
                 color = color.copy(alpha = glowAlpha),
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(if (isMobile) 16.dp else 24.dp),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = value,
-            style = if (isMobile) MaterialTheme.typography.h3.copy(fontWeight = FontWeight.Bold)
-                    else MaterialTheme.typography.h2.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.h2.copy(fontWeight = FontWeight.Bold),
             color = color
         )
 
@@ -621,7 +660,7 @@ private fun StatCard(
             text = label,
             style = MaterialTheme.typography.body2.copy(
                 fontWeight = FontWeight.Bold,
-                letterSpacing = if (isMobile) 1.sp else 2.sp
+                letterSpacing = 2.sp
             ),
             color = CyberpunkColors.TextPrimary
         )
@@ -630,7 +669,7 @@ private fun StatCard(
             text = sublabel,
             style = MaterialTheme.typography.caption.copy(
                 letterSpacing = 1.sp,
-                fontSize = if (isMobile) 9.sp else 12.sp
+                fontSize = 12.sp
             ),
             color = CyberpunkColors.TextSecondary,
             textAlign = TextAlign.Center

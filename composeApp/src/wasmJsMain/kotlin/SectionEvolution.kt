@@ -50,7 +50,7 @@ fun SectionEvolution() {
             period = "2015 - 2017",
             role = "Senior Mobile Developer",
             description = "Santander Bank projects: biometric signature, face recognition, voice commands, NFC.",
-            skills = listOf("Android", "Biometrics", "NFC", "Security"),
+            skills = listOf("Android", "Biometrics", "voice commands", "Security"),
             color = CyberpunkColors.NeonGreen,
             icon = "TM",
             type = "AGENCY"
@@ -89,6 +89,8 @@ fun SectionEvolution() {
 
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
+    val isTablet = screenWidth in 900..1200
+    val showConnectionLines = screenWidth > 1400
 
     Column(
         modifier = Modifier
@@ -117,32 +119,44 @@ fun SectionEvolution() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
-        // Timeline - vertical on mobile, horizontal on desktop
-        if (isMobile) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                careerTimeline.forEach { node ->
-                    CareerNodeCard(node = node, isPrimary = node.company == "AI Specialist", isMobile = true)
-                }
-            }
-        } else {
+        // Timeline - 2 rows layout for all screen sizes
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = if (isMobile) 0.dp else 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(if (isMobile) 20.dp else 40.dp)
+        ) {
+            // Row 1: TheRanking, TalentoMobile, Santander UK
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 40.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.Top
             ) {
-                careerTimeline.forEachIndexed { index, node ->
-                    CareerNodeCard(node = node, isPrimary = index == careerTimeline.size - 1)
-
-                    if (index < careerTimeline.size - 1) {
+                careerTimeline.take(3).forEachIndexed { index, node ->
+                    CareerNodeCard(node = node, isPrimary = false, isMobile = isMobile, isTablet = isTablet)
+                    // Solo mostrar líneas de conexión en pantallas muy grandes
+                    if (index < 2 && showConnectionLines) {
                         ConnectionLine(
                             colorStart = node.color,
                             colorEnd = careerTimeline[index + 1].color
+                        )
+                    }
+                }
+            }
+            // Row 2: B-FY, AI Specialist
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Top
+            ) {
+                careerTimeline.drop(3).forEachIndexed { index, node ->
+                    CareerNodeCard(node = node, isPrimary = node.company == "AI Specialist", isMobile = isMobile, isTablet = isTablet)
+                    // Solo mostrar líneas de conexión en pantallas muy grandes
+                    if (index < 1 && showConnectionLines) {
+                        ConnectionLine(
+                            colorStart = node.color,
+                            colorEnd = careerTimeline[4].color
                         )
                     }
                 }
@@ -229,7 +243,8 @@ private fun ExperienceStat(value: String, label: String, color: Color) {
 private fun CareerNodeCard(
     node: CareerNode,
     isPrimary: Boolean = false,
-    isMobile: Boolean = false
+    isMobile: Boolean = false,
+    isTablet: Boolean = false
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val glowAlpha by infiniteTransition.animateFloat(
@@ -241,47 +256,57 @@ private fun CareerNodeCard(
         )
     )
 
+    val cardWidth = when {
+        isMobile -> 100.dp
+        isTablet -> 150.dp
+        else -> 200.dp
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(if (isMobile) 280.dp else 200.dp)
+        modifier = Modifier.width(cardWidth)
     ) {
-        // Type badge
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(node.color.copy(alpha = 0.2f))
-                .padding(horizontal = 8.dp, vertical = 2.dp)
-        ) {
-            Text(
-                text = node.type,
-                style = MaterialTheme.typography.caption.copy(
-                    fontSize = 9.sp,
-                    letterSpacing = 1.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = node.color
-            )
+        // Type badge - hide on mobile and tablet to save space
+        if (!isMobile && !isTablet) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(node.color.copy(alpha = 0.2f))
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = node.type,
+                    style = MaterialTheme.typography.caption.copy(
+                        fontSize = 9.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = node.color
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Period
         Text(
-            text = node.period,
-            style = MaterialTheme.typography.caption.copy(letterSpacing = 2.sp),
+            text = if (isMobile) node.period.takeLast(4) else node.period, // Just year on mobile
+            style = MaterialTheme.typography.caption.copy(
+                letterSpacing = if (isMobile) 1.sp else 2.sp,
+                fontSize = if (isMobile) 8.sp else 12.sp
+            ),
             color = node.color.copy(alpha = 0.8f)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(if (isMobile) 6.dp else 12.dp))
 
         // Icon circle
         Box(
             modifier = Modifier
-                .size(if (isPrimary) 80.dp else 70.dp)
+                .size(if (isMobile) 45.dp else if (isPrimary) 80.dp else 70.dp)
                 .drawBehind {
                     drawCircle(
                         color = node.color.copy(alpha = glowAlpha),
-                        radius = size.minDimension / 2 + 15f
+                        radius = size.minDimension / 2 + (if (isMobile) 8f else 15f)
                     )
                 }
                 .clip(CircleShape)
@@ -293,66 +318,68 @@ private fun CareerNodeCard(
                         )
                     )
                 )
-                .border(2.dp, node.color, CircleShape),
+                .border(if (isMobile) 1.dp else 2.dp, node.color, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = node.icon,
-                style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                style = (if (isMobile) MaterialTheme.typography.body2 else MaterialTheme.typography.h5).copy(fontWeight = FontWeight.Bold),
                 color = CyberpunkColors.DarkBackground
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(if (isMobile) 8.dp else 16.dp))
 
         // Company name
         Text(
             text = node.company,
-            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+            style = (if (isMobile) MaterialTheme.typography.caption else MaterialTheme.typography.h6).copy(fontWeight = FontWeight.Bold),
             color = node.color,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Role
-        Text(
-            text = node.role,
-            style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Medium),
-            color = CyberpunkColors.TextPrimary,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Description
-        Text(
-            text = node.description,
-            style = MaterialTheme.typography.caption,
-            color = CyberpunkColors.TextSecondary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            maxLines = if (isMobile) 2 else 1
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Skills
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            node.skills.take(2).forEach { skill ->
-                SkillChip(skill = skill, color = node.color)
-            }
-        }
-        if (node.skills.size > 2) {
+        // Role, Description, Skills - only on desktop
+        if (!isMobile) {
             Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = node.role,
+                style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Medium),
+                color = CyberpunkColors.TextPrimary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = node.description,
+                style = MaterialTheme.typography.caption,
+                color = CyberpunkColors.TextSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Skills
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                node.skills.drop(2).forEach { skill ->
+                node.skills.take(2).forEach { skill ->
                     SkillChip(skill = skill, color = node.color)
+                }
+            }
+            if (node.skills.size > 2) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    node.skills.drop(2).forEach { skill ->
+                        SkillChip(skill = skill, color = node.color)
+                    }
                 }
             }
         }

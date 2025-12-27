@@ -31,6 +31,8 @@ import theme.CyberpunkColors
 fun SectionAIProjects() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
+    // Usar columna hasta pantallas muy grandes (>1400px)
+    val useColumnLayout = screenWidth < 1400
 
     Column(
         modifier = Modifier
@@ -82,9 +84,12 @@ fun SectionAIProjects() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
-        if (isMobile) {
+        if (useColumnLayout) {
+            // Column layout - vertical stack
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = if (isMobile) 0.dp else 60.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -101,7 +106,7 @@ fun SectionAIProjects() {
                     techStack = listOf("Python", "PyTorch", "ONNX", "Kokoro-82M", "NLLB-200"),
                     accentColor = CyberpunkColors.NeonCyan,
                     githubUrl = "github.com/AlvaroQ/TranslationAndVoiceLocally",
-                    isMobile = true
+                    useFullWidth = true
                 )
 
                 AIProjectCard(
@@ -117,17 +122,19 @@ fun SectionAIProjects() {
                     techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
                     accentColor = CyberpunkColors.NeonGreen,
                     githubUrl = "github.com/AlvaroQ/ProjectIA",
-                    isMobile = true
+                    useFullWidth = true
                 )
             }
         } else {
+            // Row layout for larger screens - cards con weight para adaptarse
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 80.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .padding(horizontal = 40.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 AIProjectCard(
+                    modifier = Modifier.weight(1f),
                     title = "Translation & Voice AI",
                     subtitle = "100% Local Processing",
                     description = "Desktop app that converts documents (PDF, Word, TXT) into high-quality speech using local AI models. No cloud, no costs, full privacy.",
@@ -143,6 +150,7 @@ fun SectionAIProjects() {
                 )
 
                 AIProjectCard(
+                    modifier = Modifier.weight(1f),
                     title = "Financial AI Platform",
                     subtitle = "Real-time Market Intelligence",
                     description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
@@ -166,6 +174,7 @@ fun SectionAIProjects() {
 
 @Composable
 private fun AIProjectCard(
+    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     description: String,
@@ -173,7 +182,7 @@ private fun AIProjectCard(
     techStack: List<String>,
     accentColor: Color,
     githubUrl: String,
-    isMobile: Boolean = false
+    useFullWidth: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -189,8 +198,8 @@ private fun AIProjectCard(
     )
 
     Column(
-        modifier = Modifier
-            .then(if (isMobile) Modifier.fillMaxWidth() else Modifier.width(450.dp))
+        modifier = modifier
+            .then(if (useFullWidth) Modifier.fillMaxWidth().widthIn(max = 700.dp) else Modifier)
             .hoverable(interactionSource)
             .drawBehind {
                 // Glow effect
