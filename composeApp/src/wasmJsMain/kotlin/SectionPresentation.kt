@@ -437,7 +437,8 @@ private fun ProfileImageWithGlow(isMobile: Boolean = false) {
                     .height(320.dp)
                     .clip(RoundedCornerShape(12.dp))
             },
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter
         )
     }
 }

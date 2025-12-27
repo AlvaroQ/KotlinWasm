@@ -31,8 +31,8 @@ import theme.CyberpunkColors
 fun SectionAIProjects() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
-    // Usar columna hasta pantallas muy grandes (>1400px)
-    val useColumnLayout = screenWidth < 1400
+    // Usar columna hasta pantallas muy grandes (>2000px) - con 3 tarjetas necesita más espacio
+    val useColumnLayout = screenWidth < 2000
 
     Column(
         modifier = Modifier
@@ -110,7 +110,7 @@ fun SectionAIProjects() {
                 )
 
                 AIProjectCard(
-                    title = "Financial AI Platform",
+                    title = "Chart Analyzer and Stock News",
                     subtitle = "Real-time Market Intelligence",
                     description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
                     features = listOf(
@@ -121,7 +121,23 @@ fun SectionAIProjects() {
                     ),
                     techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
                     accentColor = CyberpunkColors.NeonGreen,
-                    githubUrl = "github.com/AlvaroQ/ProjectIA",
+                    githubUrl = "github.com/AlvaroQ/chart-analyzer-and-stock-news",
+                    useFullWidth = true
+                )
+
+                AIProjectCard(
+                    title = "Lotto Scan",
+                    subtitle = "AI-Powered OCR Scanner",
+                    description = "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models.",
+                    features = listOf(
+                        "Multi-Lottery Support",
+                        "Offline OCR",
+                        "Confidence Scoring",
+                        "Local Storage"
+                    ),
+                    techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
+                    accentColor = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
+                    githubUrl = "github.com/AlvaroQ/lotto-scan",
                     useFullWidth = true
                 )
             }
@@ -151,7 +167,7 @@ fun SectionAIProjects() {
 
                 AIProjectCard(
                     modifier = Modifier.weight(1f),
-                    title = "Financial AI Platform",
+                    title = "Chart Analyzer and Stock News",
                     subtitle = "Real-time Market Intelligence",
                     description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
                     features = listOf(
@@ -162,7 +178,23 @@ fun SectionAIProjects() {
                     ),
                     techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
                     accentColor = CyberpunkColors.NeonGreen,
-                    githubUrl = "github.com/AlvaroQ/ProjectIA"
+                    githubUrl = "github.com/AlvaroQ/chart-analyzer-and-stock-news"
+                )
+
+                AIProjectCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Lotto Scan",
+                    subtitle = "AI-Powered OCR Scanner",
+                    description = "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models.",
+                    features = listOf(
+                        "Multi-Lottery Support",
+                        "Offline OCR",
+                        "Confidence Scoring",
+                        "Local Storage"
+                    ),
+                    techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
+                    accentColor = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
+                    githubUrl = "github.com/AlvaroQ/lotto-scan"
                 )
             }
         }

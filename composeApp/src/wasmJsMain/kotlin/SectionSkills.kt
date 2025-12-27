@@ -63,7 +63,8 @@ fun SectionSkills() {
                         "Cursor / Copilot" to 0.80f,
                         "LangChain" to 0.85f,
                         "MCP Protocol" to 0.80f,
-                        "Prompt Engineering" to 0.88f
+                        "Prompt Engineering" to 0.88f,
+                        "n8n" to 0.85f
                     ),
                     useFullWidth = true
                 )
@@ -74,8 +75,10 @@ fun SectionSkills() {
                     skills = listOf(
                         "Ktor" to 0.82f,
                         "Firebase" to 0.88f,
-                        "Git / CI-CD" to 0.90f,
-                        "REST / GraphQL" to 0.92f
+                        "Git / CI-CD" to 0.91f,
+                        "REST / GraphQL" to 0.92f,
+                        "Pen-testing" to 0.89f,
+                        "Domotics" to 0.82f
                     ),
                     useFullWidth = true
                 )
@@ -108,7 +111,8 @@ fun SectionSkills() {
                         "Cursor / Copilot" to 0.80f,
                         "LangChain" to 0.85f,
                         "MCP Protocol" to 0.80f,
-                        "Prompt Engineering" to 0.88f
+                        "Prompt Engineering" to 0.88f,
+                        "n8n" to 0.85f
                     )
                 )
 
@@ -120,7 +124,9 @@ fun SectionSkills() {
                         "Ktor" to 0.82f,
                         "Firebase" to 0.88f,
                         "Git / CI-CD" to 0.90f,
-                        "REST / GraphQL" to 0.92f
+                        "REST / GraphQL" to 0.92f,
+                        "Pen-testing" to 0.85f,
+                        "Domotics" to 0.88f
                     )
                 )
             }

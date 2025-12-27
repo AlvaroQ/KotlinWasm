@@ -38,8 +38,8 @@ fun SectionContact() {
                 "Location: Madrid, Spain (Remote)",
                 "",
                 "$ cat links.txt",
-                "LinkedIn: linkedin.com/in/alvaroquintana",
-                "GitHub: github.com/alvaroquintana",
+                "LinkedIn: linkedin.com/in/alvaro-quintana-palacios",
+                "GitHub: github.com/AlvaroQ",
                 "",
                 "$ echo Ready to build something amazing?"
             ),

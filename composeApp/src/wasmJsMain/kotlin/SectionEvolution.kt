@@ -53,7 +53,7 @@ fun SectionEvolution() {
             skills = listOf("Android", "Biometrics", "voice commands", "Security"),
             color = CyberpunkColors.NeonGreen,
             icon = "TM",
-            type = "AGENCY"
+            type = "CONSULTANT"
         ),
         CareerNode(
             company = "Santander UK",
@@ -63,7 +63,7 @@ fun SectionEvolution() {
             skills = listOf("Kotlin", "NFC", "OCR", "MVP"),
             color = Color(0xFF4A90D9), // Santander blue-ish
             icon = "UK",
-            type = "ENTERPRISE"
+            type = "CORPORATE"
         ),
         CareerNode(
             company = "B-FY",
@@ -73,7 +73,7 @@ fun SectionEvolution() {
             skills = listOf("KMP", "iOS", "Compose", "Ktor"),
             color = CyberpunkColors.NeonMagenta,
             icon = "BF",
-            type = "DIRECTOR"
+            type = "STARTUP"
         ),
         CareerNode(
             company = "AI Specialist",
@@ -81,7 +81,7 @@ fun SectionEvolution() {
             role = "AI Agent Orchestrator",
             description = "Building intelligent systems with LLMs, autonomous agents, and AI-powered workflows.",
             skills = listOf("Claude", "LangChain", "MCP", "RAG"),
-            color = CyberpunkColors.NeonPurple,
+            color = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
             icon = "AI",
             type = "SPECIALIST"
         )
