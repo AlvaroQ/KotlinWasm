@@ -43,14 +43,15 @@ fun SectionSkills() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SkillCategory(
-                    title = "Mobile Development",
+                    title = "Development",
                     color = CyberpunkColors.NeonGreen,
                     skills = listOf(
                         "Kotlin" to 0.95f,
                         "Jetpack Compose" to 0.90f,
                         "Android SDK" to 0.92f,
                         "iOS / Swift" to 0.70f,
-                        "KMP" to 0.88f
+                        "KMP" to 0.88f,
+                        "HTML/JS/CSS" to 0.85f
                     ),
                     useFullWidth = true
                 )
@@ -91,14 +92,15 @@ fun SectionSkills() {
             ) {
                 SkillCategory(
                     modifier = Modifier.weight(1f),
-                    title = "Mobile Development",
+                    title = "Development",
                     color = CyberpunkColors.NeonGreen,
                     skills = listOf(
                         "Kotlin" to 0.95f,
                         "Jetpack Compose" to 0.90f,
                         "Android SDK" to 0.92f,
                         "iOS / Swift" to 0.70f,
-                        "KMP" to 0.88f
+                        "KMP" to 0.88f,
+                        "HTML/JS/CSS" to 0.85f
                     )
                 )
 
@@ -152,9 +154,9 @@ private fun SkillCategory(
             color = color,
             fontWeight = FontWeight.Bold
         )
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         skills.forEachIndexed { index, (skill, level) ->
             NeonSkillBar(
                 skill = skill,

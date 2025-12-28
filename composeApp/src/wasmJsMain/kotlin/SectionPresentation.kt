@@ -40,8 +40,8 @@ import theme.CyberpunkColors
 fun SectionPresentation() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
-    // Usar columna hasta pantallas muy grandes (>1600px)
-    val useColumnLayout = screenWidth < 1600
+    // Usar columna en móvil/tablet, horizontal en desktop (>1200px)
+    val useColumnLayout = screenWidth < 1200
 
     val horizontalPadding = when {
         isMobile -> 20.dp
@@ -428,8 +428,8 @@ private fun ProfileImageWithGlow(isMobile: Boolean = false) {
             contentDescription = "Alvaro Quintana",
             modifier = if (isMobile) {
                 Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(0.75f) // 3:4 aspect ratio
+                    .width(180.dp)
+                    .height(240.dp)
                     .clip(RoundedCornerShape(12.dp))
             } else {
                 Modifier

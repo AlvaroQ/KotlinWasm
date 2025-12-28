@@ -1,8 +1,8 @@
 [versions]
-compose = "1.6.5"
-compose-plugin = "1.6.1"
+compose = "1.7.3"
+compose-plugin = "1.7.3"
 junit = "4.13.2"
-kotlin = "1.9.23"
+kotlin = "2.0.21"
 anko-logs = "0.10.8"
 
 [libraries]
@@ -15,5 +15,6 @@ anko-logs = { group = "org.jetbrains.anko", name = "commons-base", version.ref =
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

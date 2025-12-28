@@ -339,17 +339,22 @@ private fun CareerNodeCard(
             maxLines = if (isMobile) 2 else 1
         )
 
-        // Role, Description, Skills - only on desktop
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Role - shown on all sizes
+        Text(
+            text = node.role,
+            style = MaterialTheme.typography.caption.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = if (isMobile) 8.sp else 14.sp
+            ),
+            color = CyberpunkColors.TextPrimary,
+            textAlign = TextAlign.Center,
+            maxLines = if (isMobile) 2 else 1
+        )
+
+        // Description and Skills - only on tablet and desktop
         if (!isMobile) {
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = node.role,
-                style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Medium),
-                color = CyberpunkColors.TextPrimary,
-                textAlign = TextAlign.Center
-            )
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
