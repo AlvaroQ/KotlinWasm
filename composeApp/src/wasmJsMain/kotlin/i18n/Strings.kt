@@ -65,6 +65,23 @@ interface AppStrings {
     // Banner
     val bannerText: String
     val bannerEmail: String
+
+    // Accessibility
+    val a11yThemeToggle: String
+    val a11yThemeToggleDark: String
+    val a11yThemeToggleLight: String
+    val a11yLanguageToggle: String
+    val a11yLanguageToggleEs: String
+    val a11yLanguageToggleEn: String
+    val a11yNavigation: String
+    val a11yNavigateTo: String
+    val a11yCurrentSection: String
+    val a11yCopyEmail: String
+    val a11yEmailCopied: String
+    val a11yOpenLinkedIn: String
+    val a11yOpenGitHub: String
+    val a11yOpenProject: String
+    val a11ySkillLevel: String
 }
 
 // Helper to get current strings

@@ -1,4 +1,5 @@
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,8 +23,17 @@ import components.SectionTitle
 import data.Breakpoints
 import data.ContactData
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import theme.CyberpunkThemeColors
 import i18n.Strings
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.focusable
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 
 @Composable
 fun SectionContact() {
@@ -54,10 +64,9 @@ fun SectionContact() {
             TerminalLine("alvaro_quintana", isOutput = true)
             TerminalLine("")
             TerminalLine("$ cat contact.txt")
-            TerminalLinkLine(
+            TerminalEmailLine(
                 prefix = "Email: ",
-                text = ContactData.EMAIL,
-                url = "mailto:${ContactData.EMAIL}",
+                email = ContactData.EMAIL,
                 color = CyberpunkThemeColors.neonCyan
             )
             TerminalLine("Location: ${ContactData.LOCATION}", isOutput = true)
@@ -102,6 +111,77 @@ private fun TerminalLine(text: String, isOutput: Boolean = false) {
 }
 
 @Composable
+private fun TerminalEmailLine(
+    prefix: String,
+    email: String,
+    color: Color
+) {
+    val strings = Strings.get()
+    val interactionSource = remember { MutableInteractionSource() }
+    val copyInteractionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isCopyHovered by copyInteractionSource.collectIsHoveredAsState()
+    var copied by remember { mutableStateOf(false) }
+
+    LaunchedEffect(copied) {
+        if (copied) {
+            delay(2000)
+            copied = false
+        }
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = prefix,
+            style = MaterialTheme.typography.body2,
+            color = CyberpunkThemeColors.textPrimary
+        )
+        Text(
+            text = email,
+            style = MaterialTheme.typography.body2.copy(
+                textDecoration = if (isHovered) TextDecoration.Underline else TextDecoration.None
+            ),
+            color = if (isHovered) color else color.copy(alpha = 0.8f),
+            modifier = Modifier
+                .clickable { openUrl("mailto:$email") }
+                .hoverable(interactionSource)
+                .pointerHoverIcon(PointerIcon.Hand)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        // Copy button
+        Text(
+            text = if (copied) "OK" else "Copy",
+            style = MaterialTheme.typography.caption,
+            color = if (copied) CyberpunkThemeColors.neonGreen else color,
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(
+                    if (copied) CyberpunkThemeColors.neonGreen.copy(alpha = 0.2f)
+                    else if (isCopyHovered) color.copy(alpha = 0.2f)
+                    else color.copy(alpha = 0.1f)
+                )
+                .border(
+                    width = 1.dp,
+                    color = if (copied) CyberpunkThemeColors.neonGreen.copy(alpha = 0.5f)
+                            else color.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .clickable {
+                    copyToClipboard(email)
+                    copied = true
+                }
+                .hoverable(copyInteractionSource)
+                .pointerHoverIcon(PointerIcon.Hand)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+                .semantics {
+                    role = Role.Button
+                    contentDescription = if (copied) strings.a11yEmailCopied else strings.a11yCopyEmail
+                }
+        )
+    }
+}
+
+@Composable
 private fun TerminalLinkLine(
     prefix: String,
     text: String,
@@ -124,13 +204,17 @@ private fun TerminalLinkLine(
             ),
             color = if (isHovered) color else color.copy(alpha = 0.8f),
             modifier = Modifier
+                .clickable { openUrl(url) }
                 .hoverable(interactionSource)
                 .pointerHoverIcon(PointerIcon.Hand)
-                .clickable { openUrl(url) }
         )
     }
 }
 
 private fun openUrl(url: String) {
     window.open(url, "_blank")
+}
+
+private fun copyToClipboard(text: String) {
+    js("navigator.clipboard.writeText(text)")
 }

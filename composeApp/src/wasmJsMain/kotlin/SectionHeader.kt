@@ -40,6 +40,16 @@ import i18n.Language
 import i18n.LocalLanguage
 import i18n.Strings
 import kotlin.random.Random
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.focusable
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 
 @Composable
 fun ThemeToggle() {
@@ -47,12 +57,25 @@ fun ThemeToggle() {
     val toggleTheme = LocalThemeToggle.current
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val strings = Strings.get()
 
     val isDark = themeMode == ThemeMode.DARK
     val borderColor = if (isDark) CyberpunkThemeColors.neonCyan else CyberpunkThemeColors.neonMagenta
+    val a11yDescription = if (isDark) strings.a11yThemeToggleLight else strings.a11yThemeToggleDark
 
     Box(
         modifier = Modifier
+            .semantics {
+                role = Role.Button
+                contentDescription = a11yDescription
+            }
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (keyEvent.key == Key.Enter || keyEvent.key == Key.Spacebar) {
+                    toggleTheme()
+                    true
+                } else false
+            }
             .hoverable(interactionSource)
             .pointerHoverIcon(PointerIcon.Hand)
             .clickable { toggleTheme() }
@@ -76,12 +99,28 @@ fun LanguageToggle() {
     val toggleLanguage = LocalLanguageToggle.current
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val strings = Strings.get()
 
     val isDark = themeMode == ThemeMode.DARK
     val borderColor = if (isDark) CyberpunkThemeColors.neonCyan else CyberpunkThemeColors.neonMagenta
+    val a11yDescription = when (language) {
+        Language.ES -> strings.a11yLanguageToggleEn
+        Language.EN -> strings.a11yLanguageToggleEs
+    }
 
     Box(
         modifier = Modifier
+            .semantics {
+                role = Role.Button
+                contentDescription = a11yDescription
+            }
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (keyEvent.key == Key.Enter || keyEvent.key == Key.Spacebar) {
+                    toggleLanguage()
+                    true
+                } else false
+            }
             .hoverable(interactionSource)
             .pointerHoverIcon(PointerIcon.Hand)
             .clickable { toggleLanguage() }

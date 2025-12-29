@@ -1,16 +1,27 @@
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.browser.window
+import i18n.Strings
 import kotlinx.coroutines.launch
 import org.w3c.dom.events.Event
 import theme.CyberpunkTheme
@@ -163,15 +174,20 @@ fun App() {
             LocalScrollPosition provides scrollState.value,
             LocalViewportHeight provides viewportHeight
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                // Main scrollable content
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(CyberpunkThemeColors.background)
-                        .verticalScroll(scrollState),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Top banner
+                ContactBanner(isMobile = isMobile)
+
+                // Main content area
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Main scrollable content
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .background(CyberpunkThemeColors.background)
+                            .verticalScroll(scrollState),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                     // Header - no animation (already has glitch/typewriter)
                     Box(
                         modifier = Modifier.onGloballyPositioned { coordinates ->
@@ -233,16 +249,66 @@ fun App() {
                     }
                 }
 
-                // Fixed navigation menu at top
-                NavigationMenu(
-                    currentSection = currentSection,
-                    onSectionClick = { scrollToSection(it) },
-                    isMobile = isMobile,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 8.dp)
+                    // Fixed navigation menu at top
+                    NavigationMenu(
+                        currentSection = currentSection,
+                        onSectionClick = { scrollToSection(it) },
+                        isMobile = isMobile,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContactBanner(isMobile: Boolean) {
+    val strings = Strings.get()
+    val borderColor = CyberpunkThemeColors.neonCyan.copy(alpha = 0.4f)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(CyberpunkThemeColors.surface)
+            .drawBehind {
+                // Bottom border
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = 2f
                 )
             }
+            .padding(horizontal = if (isMobile) 12.dp else 20.dp, vertical = if (isMobile) 8.dp else 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = strings.bannerText,
+                style = MaterialTheme.typography.caption.copy(
+                    fontSize = if (isMobile) 10.sp else 14.sp
+                ),
+                color = CyberpunkThemeColors.textPrimary
+            )
+            Text(
+                text = strings.bannerEmail,
+                style = MaterialTheme.typography.caption.copy(
+                    fontSize = if (isMobile) 10.sp else 14.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                color = CyberpunkThemeColors.neonCyan,
+                modifier = Modifier
+                    .clickable {
+                        window.open("mailto:alvaroquintanapalacios@gmail.com", "_blank")
+                    }
+                    .pointerHoverIcon(PointerIcon.Hand)
+            )
         }
     }
 }

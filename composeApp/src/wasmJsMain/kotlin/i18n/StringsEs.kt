@@ -55,7 +55,7 @@ object StringsEs : AppStrings {
     override val emailLabel = "Email: "
     override val locationLabel = "Ubicacion: "
     override val catLinks = "$ cat enlaces.txt"
-    override val availableFor = "Disponible para Desarrollo de Agentes IA & Proyectos Mobile"
+    override val availableFor = "Disponible para desarrollo y proyectos"
 
     // Theme/Language
     override val lightMode = "[ CLARO ]"
@@ -64,4 +64,21 @@ object StringsEs : AppStrings {
     // Banner
     override val bannerText = "Vivo en Madrid pero trabajo en remoto, puedes contactarme por "
     override val bannerEmail = "email"
+
+    // Accessibility
+    override val a11yThemeToggle = "Cambiar tema"
+    override val a11yThemeToggleDark = "Cambiar a tema oscuro"
+    override val a11yThemeToggleLight = "Cambiar a tema claro"
+    override val a11yLanguageToggle = "Cambiar idioma"
+    override val a11yLanguageToggleEs = "Cambiar a espanol"
+    override val a11yLanguageToggleEn = "Cambiar a ingles"
+    override val a11yNavigation = "Menu de navegacion"
+    override val a11yNavigateTo = "Ir a seccion"
+    override val a11yCurrentSection = "Seccion actual"
+    override val a11yCopyEmail = "Copiar email al portapapeles"
+    override val a11yEmailCopied = "Email copiado"
+    override val a11yOpenLinkedIn = "Abrir perfil de LinkedIn"
+    override val a11yOpenGitHub = "Abrir perfil de GitHub"
+    override val a11yOpenProject = "Abrir proyecto en GitHub"
+    override val a11ySkillLevel = "Nivel de habilidad"
 }

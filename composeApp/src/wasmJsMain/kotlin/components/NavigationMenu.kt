@@ -24,7 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import i18n.Language
 import i18n.LocalLanguage
+import i18n.Strings
 import theme.CyberpunkThemeColors
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.focusable
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 
 enum class Section(val id: String, val labelEs: String, val labelEn: String) {
     HEADER("header", "Inicio", "Home"),
@@ -81,6 +90,7 @@ private fun NavigationItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val strings = Strings.get()
 
     val label = when (language) {
         Language.ES -> section.labelEs
@@ -88,6 +98,12 @@ private fun NavigationItem(
     }
 
     val displayLabel = if (isMobile) label.take(3).uppercase() else label.uppercase()
+
+    val a11yDescription = if (isActive) {
+        "$label - ${strings.a11yCurrentSection}"
+    } else {
+        "${strings.a11yNavigateTo} $label"
+    }
 
     val alpha by animateFloatAsState(
         targetValue = when {
@@ -100,6 +116,17 @@ private fun NavigationItem(
 
     Box(
         modifier = Modifier
+            .semantics {
+                role = Role.Button
+                contentDescription = a11yDescription
+            }
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (keyEvent.key == Key.Enter || keyEvent.key == Key.Spacebar) {
+                    onClick()
+                    true
+                } else false
+            }
             .hoverable(interactionSource)
             .pointerHoverIcon(PointerIcon.Hand)
             .clickable { onClick() }
