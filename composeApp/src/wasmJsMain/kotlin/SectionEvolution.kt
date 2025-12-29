@@ -116,76 +116,93 @@ fun SectionEvolution() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
-        // Experience summary
-        if (isMobile) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(CyberpunkThemeColors.card)
-                    .border(
-                        1.dp,
-                        Brush.horizontalGradient(
-                            listOf(
-                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
-                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.5f)
-                            )
-                        ),
-                        RoundedCornerShape(12.dp)
-                    )
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                    ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkThemeColors.neonGreen)
-                    ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkThemeColors.neonCyan)
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                    ExperienceStat(value = "4+", label = "Companies", color = CyberpunkThemeColors.neonMagenta)
-                    ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkThemeColors.neonPurple)
-                }
-            }
-        } else {
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(CyberpunkThemeColors.card)
-                    .border(
-                        1.dp,
-                        Brush.horizontalGradient(
-                            listOf(
-                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
-                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.5f)
-                            )
-                        ),
-                        RoundedCornerShape(12.dp)
-                    )
-                    .padding(32.dp),
-                horizontalArrangement = Arrangement.spacedBy(60.dp)
-            ) {
-                ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkThemeColors.neonGreen)
-                ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkThemeColors.neonCyan)
-                ExperienceStat(value = "4+", label = "Companies", color = CyberpunkThemeColors.neonMagenta)
-                ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkThemeColors.neonPurple)
-            }
+        // Experience summary - always 4 cards in a row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 900.dp)
+                .padding(horizontal = if (isMobile) 0.dp else 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isMobile) 8.dp else 16.dp)
+        ) {
+            ExperienceStatCard(
+                modifier = Modifier.weight(1f),
+                value = "12+",
+                label = strings.yearsInTechLabel,
+                color = CyberpunkThemeColors.neonGreen,
+                compact = isMobile
+            )
+            ExperienceStatCard(
+                modifier = Modifier.weight(1f),
+                value = "7+",
+                label = strings.yearsAtBfyLabel,
+                color = CyberpunkThemeColors.neonCyan,
+                compact = isMobile
+            )
+            ExperienceStatCard(
+                modifier = Modifier.weight(1f),
+                value = "4+",
+                label = strings.companiesLabel,
+                color = CyberpunkThemeColors.neonMagenta,
+                compact = isMobile
+            )
+            ExperienceStatCard(
+                modifier = Modifier.weight(1f),
+                value = "5+",
+                label = "Platforms",
+                color = CyberpunkThemeColors.neonPurple,
+                compact = isMobile
+            )
         }
     }
 }
 
 @Composable
-private fun ExperienceStat(value: String, label: String, color: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+private fun ExperienceStatCard(
+    modifier: Modifier = Modifier,
+    value: String,
+    label: String,
+    color: Color,
+    compact: Boolean = false
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.6f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(if (compact) 8.dp else 12.dp))
+            .background(CyberpunkThemeColors.card)
+            .border(
+                width = 1.dp,
+                color = color.copy(alpha = glowAlpha),
+                shape = RoundedCornerShape(if (compact) 8.dp else 12.dp)
+            )
+            .padding(if (compact) 10.dp else 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = value,
-            style = MaterialTheme.typography.h4,
-            color = color,
-            fontWeight = FontWeight.Bold
+            style = (if (compact) MaterialTheme.typography.h5 else MaterialTheme.typography.h3)
+                .copy(fontWeight = FontWeight.Bold),
+            color = color
         )
+
         Text(
             text = label,
-            style = MaterialTheme.typography.caption,
-            color = CyberpunkThemeColors.textSecondary
+            style = MaterialTheme.typography.caption.copy(
+                letterSpacing = if (compact) 0.5.sp else 1.sp,
+                fontSize = if (compact) 8.sp else 12.sp
+            ),
+            color = CyberpunkThemeColors.textSecondary,
+            textAlign = TextAlign.Center,
+            maxLines = if (compact) 2 else 1
         )
     }
 }

@@ -133,71 +133,37 @@ fun SectionPresentation() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 24.dp else 40.dp))
 
-        // Highlights row
-        if (useColumnLayout) {
-            // Column layout for stats
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .widthIn(max = 500.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-                ) {
-                    StatCard(
-                        modifier = Modifier.weight(1f),
-                        value = "+12",
-                        label = "YEARS",
-                        sublabel = "EXPERIENCE",
-                        color = CyberpunkThemeColors.neonGreen
-                    )
-                    StatCard(
-                        modifier = Modifier.weight(1f),
-                        value = "+7",
-                        label = "YEARS",
-                        sublabel = "LEADING B-FY",
-                        color = CyberpunkThemeColors.neonCyan
-                    )
-                }
-                StatCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = "4",
-                    label = "PLATFORMS",
-                    sublabel = "ANDROID iOS WEB DESKTOP",
-                    color = CyberpunkThemeColors.neonMagenta
-                )
-            }
-        } else {
-            // Row layout for large screens - cards con weight para adaptarse
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    value = "+12",
-                    label = "YEARS",
-                    sublabel = "EXPERIENCE",
-                    color = CyberpunkThemeColors.neonGreen
-                )
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    value = "+7",
-                    label = "YEARS",
-                    sublabel = "LEADING B-FY",
-                    color = CyberpunkThemeColors.neonCyan
-                )
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    value = "4",
-                    label = "PLATFORMS",
-                    sublabel = "ANDROID iOS WEB DESKTOP",
-                    color = CyberpunkThemeColors.neonMagenta
-                )
-            }
+        // Highlights row - always horizontal, 3 cards aligned
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 900.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isMobile) 12.dp else 24.dp)
+        ) {
+            StatCard(
+                modifier = Modifier.weight(1f),
+                value = "+12",
+                label = "YEARS",
+                sublabel = "50+ APPS",
+                color = CyberpunkThemeColors.neonGreen,
+                compact = isMobile
+            )
+            StatCard(
+                modifier = Modifier.weight(1f),
+                value = "4",
+                label = "PLATFORMS",
+                sublabel = "1M+ USERS",
+                color = CyberpunkThemeColors.neonCyan,
+                compact = isMobile
+            )
+            StatCard(
+                modifier = Modifier.weight(1f),
+                value = "SDK",
+                label = "B-FY",
+                sublabel = "15+ ENTERPRISE APPS",
+                color = CyberpunkThemeColors.neonMagenta,
+                compact = isMobile
+            )
         }
     }
 }
@@ -436,7 +402,7 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
             Spacer(modifier = Modifier.height(if (isMobile) 4.dp else 8.dp))
 
             Text(
-                text = "KOTLIN MULTIPLATFORM WASM",
+                text = "COMPOSE MULTIPLATFORM WASM",
                 style = (if (isMobile) MaterialTheme.typography.h6 else MaterialTheme.typography.h4).copy(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = if (isMobile) 1.sp else 4.sp
@@ -537,7 +503,8 @@ private fun StatCard(
     value: String,
     label: String,
     sublabel: String,
-    color: Color
+    color: Color,
+    compact: Boolean = false
 ) {
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -552,19 +519,20 @@ private fun StatCard(
 
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(if (compact) 8.dp else 12.dp))
             .background(CyberpunkThemeColors.card)
             .border(
                 width = 1.dp,
                 color = color.copy(alpha = glowAlpha),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(if (compact) 8.dp else 12.dp)
             )
-            .padding(24.dp),
+            .padding(if (compact) 12.dp else 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = value,
-            style = MaterialTheme.typography.h2.copy(fontWeight = FontWeight.Bold),
+            style = (if (compact) MaterialTheme.typography.h4 else MaterialTheme.typography.h2)
+                .copy(fontWeight = FontWeight.Bold),
             color = color
         )
 
@@ -572,7 +540,8 @@ private fun StatCard(
             text = label,
             style = MaterialTheme.typography.body2.copy(
                 fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp
+                letterSpacing = if (compact) 1.sp else 2.sp,
+                fontSize = if (compact) 10.sp else 14.sp
             ),
             color = CyberpunkThemeColors.textPrimary
         )
@@ -580,8 +549,8 @@ private fun StatCard(
         Text(
             text = sublabel,
             style = MaterialTheme.typography.caption.copy(
-                letterSpacing = 1.sp,
-                fontSize = 12.sp
+                letterSpacing = if (compact) 0.5.sp else 1.sp,
+                fontSize = if (compact) 9.sp else 12.sp
             ),
             color = CyberpunkThemeColors.textSecondary,
             textAlign = TextAlign.Center

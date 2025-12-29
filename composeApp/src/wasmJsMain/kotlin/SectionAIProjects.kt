@@ -276,17 +276,34 @@ private fun AIProjectCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                features.take(2).forEach { feature ->
-                    FeatureItem(feature, themeAccentColor)
+        // Features layout: 4 in row on desktop, 2 columns on mobile
+        val screenWidth = LocalScreenWidth.current
+        val useCompactFeatures = screenWidth < Breakpoints.TABLET
+
+        if (useCompactFeatures) {
+            // Mobile/Tablet: 2 columns aligned with space between
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(horizontalAlignment = Alignment.Start) {
+                    features.take(2).forEach { feature ->
+                        FeatureItem(feature, themeAccentColor)
+                    }
+                }
+                Column(horizontalAlignment = Alignment.Start) {
+                    features.drop(2).forEach { feature ->
+                        FeatureItem(feature, themeAccentColor)
+                    }
                 }
             }
-            Column {
-                features.drop(2).forEach { feature ->
+        } else {
+            // Desktop: all 4 in a row spanning full width
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                features.forEach { feature ->
                     FeatureItem(feature, themeAccentColor)
                 }
             }

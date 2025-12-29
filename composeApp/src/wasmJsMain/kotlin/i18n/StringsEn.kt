@@ -55,7 +55,7 @@ object StringsEn : AppStrings {
     override val emailLabel = "Email: "
     override val locationLabel = "Location: "
     override val catLinks = "$ cat links.txt"
-    override val availableFor = "Available for development & projects"
+    override val availableFor = "Open to Senior/Staff roles • Remote • Kotlin/KMP/AI projects"
 
     // Theme/Language
     override val lightMode = "[ LIGHT ]"
