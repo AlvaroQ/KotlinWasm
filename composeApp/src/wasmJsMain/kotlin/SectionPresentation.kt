@@ -33,7 +33,15 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import personalpage.composeapp.generated.resources.Res
 import personalpage.composeapp.generated.resources.business_front
-import theme.CyberpunkColors
+import theme.CyberpunkThemeColors
+import i18n.Strings
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import kotlinx.browser.window
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -51,7 +59,7 @@ fun SectionPresentation() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(CyberpunkColors.DarkSurface)
+            .background(CyberpunkThemeColors.surface)
             .padding(vertical = if (isMobile) 40.dp else 80.dp, horizontal = horizontalPadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -63,13 +71,13 @@ fun SectionPresentation() {
                     .fillMaxWidth()
                     .widthIn(max = 800.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(CyberpunkColors.DarkCard)
+                    .background(CyberpunkThemeColors.card)
                     .border(
                         width = 1.dp,
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                CyberpunkColors.NeonCyan.copy(alpha = 0.5f),
-                                CyberpunkColors.NeonMagenta.copy(alpha = 0.3f)
+                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
+                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.3f)
                             )
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -90,13 +98,13 @@ fun SectionPresentation() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(CyberpunkColors.DarkCard)
+                    .background(CyberpunkThemeColors.card)
                     .border(
                         width = 1.dp,
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                CyberpunkColors.NeonCyan.copy(alpha = 0.5f),
-                                CyberpunkColors.NeonMagenta.copy(alpha = 0.3f)
+                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
+                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.3f)
                             )
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -144,14 +152,14 @@ fun SectionPresentation() {
                         value = "+12",
                         label = "YEARS",
                         sublabel = "EXPERIENCE",
-                        color = CyberpunkColors.NeonGreen
+                        color = CyberpunkThemeColors.neonGreen
                     )
                     StatCard(
                         modifier = Modifier.weight(1f),
                         value = "+7",
                         label = "YEARS",
                         sublabel = "LEADING B-FY",
-                        color = CyberpunkColors.NeonCyan
+                        color = CyberpunkThemeColors.neonCyan
                     )
                 }
                 StatCard(
@@ -159,7 +167,7 @@ fun SectionPresentation() {
                     value = "4",
                     label = "PLATFORMS",
                     sublabel = "ANDROID iOS WEB DESKTOP",
-                    color = CyberpunkColors.NeonMagenta
+                    color = CyberpunkThemeColors.neonMagenta
                 )
             }
         } else {
@@ -173,21 +181,21 @@ fun SectionPresentation() {
                     value = "+12",
                     label = "YEARS",
                     sublabel = "EXPERIENCE",
-                    color = CyberpunkColors.NeonGreen
+                    color = CyberpunkThemeColors.neonGreen
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     value = "+7",
                     label = "YEARS",
                     sublabel = "LEADING B-FY",
-                    color = CyberpunkColors.NeonCyan
+                    color = CyberpunkThemeColors.neonCyan
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     value = "4",
                     label = "PLATFORMS",
                     sublabel = "ANDROID iOS WEB DESKTOP",
-                    color = CyberpunkColors.NeonMagenta
+                    color = CyberpunkThemeColors.neonMagenta
                 )
             }
         }
@@ -196,25 +204,27 @@ fun SectionPresentation() {
 
 @Composable
 private fun PresentationBioContent(isMobile: Boolean = false) {
+    val strings = Strings.get()
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(if (isMobile) 12.dp else 16.dp),
         horizontalAlignment = if (isMobile) Alignment.CenterHorizontally else Alignment.Start
     ) {
                 Text(
-                    text = "HI, I'M ALVARO",
+                    text = strings.hiImAlvaro,
                     style = (if (isMobile) MaterialTheme.typography.h4 else MaterialTheme.typography.h3).copy(
                         fontWeight = FontWeight.Bold,
                         letterSpacing = if (isMobile) 2.sp else 3.sp
                     ),
-                    color = CyberpunkColors.NeonCyan,
+                    color = CyberpunkThemeColors.neonCyan,
                     textAlign = if (isMobile) TextAlign.Center else TextAlign.Start
                 )
 
                 Text(
-                    text = "Senior Mobile Developer & AI Specialist",
+                    text = strings.jobTitle,
                     style = if (isMobile) MaterialTheme.typography.h6 else MaterialTheme.typography.h5,
-                    color = CyberpunkColors.TextPrimary,
+                    color = CyberpunkThemeColors.textPrimary,
                     textAlign = if (isMobile) TextAlign.Center else TextAlign.Start
                 )
 
@@ -232,7 +242,7 @@ private fun PresentationBioContent(isMobile: Boolean = false) {
                     SocialLinkButton(
                         text = "GitHub",
                         url = "github.com/AlvaroQ",
-                        color = CyberpunkColors.TextPrimary,
+                        color = CyberpunkThemeColors.textPrimary,
                         icon = Icons.Filled.Build
                     )
                 }
@@ -241,151 +251,37 @@ private fun PresentationBioContent(isMobile: Boolean = false) {
 
                 // Paragraph 1: Kotlin specialist intro
                 Text(
-                    text = buildAnnotatedString {
-                        append("I'm a ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Kotlin specialist")
-                        }
-                        append(" with over 12 years building ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("mobile applications")
-                        }
-                        append(". Expert in ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Kotlin Multiplatform (KMP)")
-                        }
-                        append(" since its first alpha release. In fact, ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("this very site is built with KMP using Kotlin WASM")
-                        }
-                        append(".")
-                    },
+                    text = parseStyledText(strings.bioP1, CyberpunkThemeColors.textSecondary, CyberpunkThemeColors.neonCyan),
                     style = MaterialTheme.typography.body1.copy(lineHeight = 28.sp),
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
 
                 // Paragraph 2: UI & Architecture
                 Text(
-                    text = buildAnnotatedString {
-                        append("I develop modern UIs with ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Jetpack Compose")
-                        }
-                        append(" and follow clean architecture patterns like ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("MVVM")
-                        }
-                        append(" and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Clean Architecture")
-                        }
-                        append(". For dependency injection I prefer ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Hilt")
-                        }
-                        append(" but also work with ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Koin")
-                        }
-                        append(" and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Dagger")
-                        }
-                        append(".")
-                    },
+                    text = parseStyledText(strings.bioP2, CyberpunkThemeColors.textSecondary, CyberpunkThemeColors.neonCyan),
                     style = MaterialTheme.typography.body1.copy(lineHeight = 28.sp),
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
 
                 // Paragraph 3: Security focus
                 Text(
-                    text = buildAnnotatedString {
-                        append("I focus on building ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("secure applications")
-                        }
-                        append(", using techniques like ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("penetration testing")
-                        }
-                        append(" and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("traffic sniffing")
-                        }
-                        append(" to debug and improve my developments. I've contributed to major projects at ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Santander Bank")
-                        }
-                        append(" (UK, Germany, Spain) including biometric authentication, face recognition, and NFC payments.")
-                    },
+                    text = parseStyledText(strings.bioP3, CyberpunkThemeColors.textSecondary, CyberpunkThemeColors.neonCyan),
                     style = MaterialTheme.typography.body1.copy(lineHeight = 28.sp),
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
 
                 // Paragraph 4: Workflow & Tools
                 Text(
-                    text = buildAnnotatedString {
-                        append("I work with ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Git")
-                        }
-                        append(", ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Git Flow")
-                        }
-                        append(", and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Scrum/Agile")
-                        }
-                        append(" methodologies. I love ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Firebase")
-                        }
-                        append(" (")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Push Notifications")
-                        }
-                        append(", ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Remote Config")
-                        }
-                        append(", ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Crashlytics")
-                        }
-                        append(") and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Vercel")
-                        }
-                        append(" for deployments.")
-                    },
+                    text = parseStyledText(strings.bioP4, CyberpunkThemeColors.textSecondary, CyberpunkThemeColors.neonCyan),
                     style = MaterialTheme.typography.body1.copy(lineHeight = 28.sp),
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
 
                 // Paragraph 5: AI focus
                 Text(
-                    text = buildAnnotatedString {
-                        append("My latest focus: ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("AI Agent orchestration")
-                        }
-                        append(" with ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Claude")
-                        }
-                        append(", ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("LangChain")
-                        }
-                        append(", and ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("MCP protocols")
-                        }
-                        append(".")
-                    },
+                    text = parseStyledText(strings.bioP5, CyberpunkThemeColors.textSecondary, CyberpunkThemeColors.neonCyan),
                     style = MaterialTheme.typography.body1.copy(lineHeight = 28.sp),
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
     }
 }
@@ -404,6 +300,10 @@ private fun ProfileImageWithGlow(isMobile: Boolean = false) {
         )
     )
 
+    // Get colors before drawBehind
+    val neonCyan = CyberpunkThemeColors.neonCyan
+    val neonMagenta = CyberpunkThemeColors.neonMagenta
+
     Box(
         modifier = Modifier
             .then(if (isMobile) Modifier.fillMaxWidth() else Modifier)
@@ -412,8 +312,8 @@ private fun ProfileImageWithGlow(isMobile: Boolean = false) {
                 drawRoundRect(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            CyberpunkColors.NeonCyan.copy(alpha = glowAlpha * 0.4f),
-                            CyberpunkColors.NeonMagenta.copy(alpha = glowAlpha * 0.2f),
+                            neonCyan.copy(alpha = glowAlpha * 0.4f),
+                            neonMagenta.copy(alpha = glowAlpha * 0.2f),
                             Color.Transparent
                         )
                     ),
@@ -465,29 +365,33 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
         )
     )
 
+    // Get colors before drawBehind
+    val neonMagenta = CyberpunkThemeColors.neonMagenta
+    val neonCyan = CyberpunkThemeColors.neonCyan
+
     Box(
         modifier = Modifier
             .drawBehind {
                 drawRoundRect(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            CyberpunkColors.NeonMagenta.copy(alpha = 0.2f),
-                            CyberpunkColors.NeonCyan.copy(alpha = 0.2f),
-                            CyberpunkColors.NeonMagenta.copy(alpha = 0.2f)
+                            neonMagenta.copy(alpha = 0.2f),
+                            neonCyan.copy(alpha = 0.2f),
+                            neonMagenta.copy(alpha = 0.2f)
                         )
                     ),
                     cornerRadius = CornerRadius(12.dp.toPx())
                 )
             }
             .clip(RoundedCornerShape(12.dp))
-            .background(CyberpunkColors.DarkCard)
+            .background(CyberpunkThemeColors.card)
             .border(
                 width = 2.dp,
                 brush = Brush.horizontalGradient(
                     colors = listOf(
-                        CyberpunkColors.NeonMagenta.copy(alpha = borderAlpha),
-                        CyberpunkColors.NeonCyan.copy(alpha = borderAlpha),
-                        CyberpunkColors.NeonMagenta.copy(alpha = borderAlpha)
+                        CyberpunkThemeColors.neonMagenta.copy(alpha = borderAlpha),
+                        CyberpunkThemeColors.neonCyan.copy(alpha = borderAlpha),
+                        CyberpunkThemeColors.neonMagenta.copy(alpha = borderAlpha)
                     )
                 ),
                 shape = RoundedCornerShape(12.dp)
@@ -505,7 +409,7 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
                     ),
-                    color = CyberpunkColors.TextPrimary,
+                    color = CyberpunkThemeColors.textPrimary,
                     textAlign = TextAlign.Center
                 )
             } else {
@@ -516,7 +420,7 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                     Text(
                         text = "//",
                         style = MaterialTheme.typography.h5,
-                        color = CyberpunkColors.NeonMagenta
+                        color = CyberpunkThemeColors.neonMagenta
                     )
                     Text(
                         text = "THIS SITE IS 100% BUILT WITH",
@@ -524,7 +428,7 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 2.sp
                         ),
-                        color = CyberpunkColors.TextPrimary
+                        color = CyberpunkThemeColors.textPrimary
                     )
                 }
             }
@@ -537,7 +441,7 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                     fontWeight = FontWeight.Bold,
                     letterSpacing = if (isMobile) 1.sp else 4.sp
                 ),
-                color = CyberpunkColors.NeonCyan,
+                color = CyberpunkThemeColors.neonCyan,
                 textAlign = TextAlign.Center
             )
 
@@ -550,18 +454,18 @@ private fun KMPWasmBadge(isMobile: Boolean = false) {
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TechBadge("Compose", CyberpunkColors.NeonGreen)
-                        TechBadge("Kotlin", CyberpunkColors.NeonMagenta)
+                        TechBadge("Compose", CyberpunkThemeColors.neonGreen)
+                        TechBadge("Kotlin", CyberpunkThemeColors.neonMagenta)
                     }
-                    TechBadge("WebAssembly", CyberpunkColors.NeonCyan)
+                    TechBadge("WebAssembly", CyberpunkThemeColors.neonCyan)
                 }
             } else {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    TechBadge("Compose", CyberpunkColors.NeonGreen)
-                    TechBadge("Kotlin", CyberpunkColors.NeonMagenta)
-                    TechBadge("WebAssembly", CyberpunkColors.NeonCyan)
+                    TechBadge("Compose", CyberpunkThemeColors.neonGreen)
+                    TechBadge("Kotlin", CyberpunkThemeColors.neonMagenta)
+                    TechBadge("WebAssembly", CyberpunkThemeColors.neonCyan)
                 }
             }
         }
@@ -590,11 +494,18 @@ private fun TechBadge(text: String, color: Color) {
 
 @Composable
 private fun SocialLinkButton(text: String, url: String, color: Color, icon: ImageVector? = null) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val fullUrl = if (url.startsWith("http")) url else "https://$url"
+
     Box(
         modifier = Modifier
+            .hoverable(interactionSource)
+            .pointerHoverIcon(PointerIcon.Hand)
+            .clickable { window.open(fullUrl, "_blank") }
             .clip(RoundedCornerShape(8.dp))
-            .background(color.copy(alpha = 0.15f))
-            .border(1.dp, color.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .background(color.copy(alpha = if (isHovered) 0.25f else 0.15f))
+            .border(1.dp, color.copy(alpha = if (isHovered) 0.8f else 0.5f), RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Row(
@@ -642,7 +553,7 @@ private fun StatCard(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(CyberpunkColors.DarkCard)
+            .background(CyberpunkThemeColors.card)
             .border(
                 width = 1.dp,
                 color = color.copy(alpha = glowAlpha),
@@ -663,7 +574,7 @@ private fun StatCard(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp
             ),
-            color = CyberpunkColors.TextPrimary
+            color = CyberpunkThemeColors.textPrimary
         )
 
         Text(
@@ -672,8 +583,35 @@ private fun StatCard(
                 letterSpacing = 1.sp,
                 fontSize = 12.sp
             ),
-            color = CyberpunkColors.TextSecondary,
+            color = CyberpunkThemeColors.textSecondary,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+/**
+ * Parses text with **bold** markers and returns an AnnotatedString
+ */
+@Composable
+private fun parseStyledText(text: String, baseColor: Color, boldColor: Color): androidx.compose.ui.text.AnnotatedString {
+    return buildAnnotatedString {
+        var currentIndex = 0
+        val boldPattern = Regex("\\*\\*(.+?)\\*\\*")
+
+        boldPattern.findAll(text).forEach { match ->
+            // Add text before the bold part
+            if (match.range.first > currentIndex) {
+                append(text.substring(currentIndex, match.range.first))
+            }
+            // Add the bold text
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = boldColor)) {
+                append(match.groupValues[1])
+            }
+            currentIndex = match.range.last + 1
+        }
+        // Add remaining text
+        if (currentIndex < text.length) {
+            append(text.substring(currentIndex))
+        }
     }
 }

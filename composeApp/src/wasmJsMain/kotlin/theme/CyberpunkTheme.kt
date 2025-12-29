@@ -8,6 +8,7 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -22,8 +23,14 @@ import org.jetbrains.compose.resources.Font
 import personalpage.composeapp.generated.resources.Res
 import personalpage.composeapp.generated.resources.roboto_serif_regular
 
-// Cyberpunk Color Palette
+// Theme Mode
+enum class ThemeMode { DARK, LIGHT }
+
+val LocalThemeMode = compositionLocalOf { ThemeMode.DARK }
+
+// Dark Cyberpunk Color Palette
 object CyberpunkColors {
+    // Neon accent colors
     val NeonCyan = Color(0xFF00FFFF)
     val NeonMagenta = Color(0xFFFF00FF)
     val NeonPurple = Color(0xFF8B00FF)
@@ -31,19 +38,117 @@ object CyberpunkColors {
     val NeonGreen = Color(0xFF39FF14)
     val NeonYellow = Color(0xFFFFFF00)
 
+    // Brand/custom colors
+    val Orchid = Color(0xFFDA70D6)
+    val SantanderBlue = Color(0xFF4A90D9)
+
+    // Dark backgrounds
     val DarkBackground = Color(0xFF0A0A0F)
     val DarkSurface = Color(0xFF12121A)
     val DarkCard = Color(0xFF1A1A2E)
+    val DarkGradient = Color(0xFF0A0A1A)
     val GridLines = Color(0xFF16213E)
 
+    // Text colors
     val TextPrimary = Color(0xFFE0E0E0)
     val TextSecondary = Color(0xFFB0B0B0)
 
+    // Glow effects
     val GlowCyan = Color(0x6600FFFF)
     val GlowMagenta = Color(0x66FF00FF)
+
+    // Logo background (almost black for dark theme)
+    val LogoBackground = Color(0xFF1A1A1A)
 }
 
-val CyberpunkColorScheme = darkColors(
+// Light Cyberpunk Color Palette
+object CyberpunkColorsLight {
+    // Neon accent colors (much darker for high contrast on light bg)
+    val NeonCyan = Color(0xFF005555)      // Darker cyan for readability
+    val NeonMagenta = Color(0xFF990099)   // Darker magenta
+    val NeonPurple = Color(0xFF5500AA)    // Darker purple
+    val NeonPink = Color(0xFFAA0055)      // Darker pink
+    val NeonGreen = Color(0xFF0D6B0D)     // Darker green
+    val NeonYellow = Color(0xFF997700)    // Darker yellow/gold
+
+    // Brand/custom colors (darker for light theme)
+    val Orchid = Color(0xFF8B4088)        // Much darker orchid
+    val SantanderBlue = Color(0xFF2A60A9) // Darker blue
+
+    // Light backgrounds
+    val LightBackground = Color(0xFFF5F5FA)
+    val LightSurface = Color(0xFFEAEAF2)
+    val LightCard = Color(0xFFFFFFFF)
+    val LightGradient = Color(0xFFE5E5F0)
+    val GridLines = Color(0xFFD0D0E0)
+
+    // Text colors (high contrast)
+    val TextPrimary = Color(0xFF0A0A1E)   // Almost black
+    val TextSecondary = Color(0xFF3A3A4A) // Dark gray
+
+    // Glow effects
+    val GlowCyan = Color(0x44007777)
+    val GlowMagenta = Color(0x44990099)
+
+    // Logo background (almost white for light theme)
+    val LogoBackground = Color(0xFFF5F5F5)
+}
+
+// Theme-aware color accessor
+object CyberpunkThemeColors {
+    val neonCyan: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonCyan else CyberpunkColorsLight.NeonCyan
+
+    val neonMagenta: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonMagenta else CyberpunkColorsLight.NeonMagenta
+
+    val neonPurple: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonPurple else CyberpunkColorsLight.NeonPurple
+
+    val neonPink: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonPink else CyberpunkColorsLight.NeonPink
+
+    val neonGreen: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonGreen else CyberpunkColorsLight.NeonGreen
+
+    val neonYellow: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.NeonYellow else CyberpunkColorsLight.NeonYellow
+
+    val background: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.DarkBackground else CyberpunkColorsLight.LightBackground
+
+    val surface: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.DarkSurface else CyberpunkColorsLight.LightSurface
+
+    val card: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.DarkCard else CyberpunkColorsLight.LightCard
+
+    val gridLines: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.GridLines else CyberpunkColorsLight.GridLines
+
+    val textPrimary: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.TextPrimary else CyberpunkColorsLight.TextPrimary
+
+    val textSecondary: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.TextSecondary else CyberpunkColorsLight.TextSecondary
+
+    val glowCyan: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.GlowCyan else CyberpunkColorsLight.GlowCyan
+
+    val glowMagenta: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.GlowMagenta else CyberpunkColorsLight.GlowMagenta
+
+    val logoBackground: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.LogoBackground else CyberpunkColorsLight.LogoBackground
+
+    val santanderBlue: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.SantanderBlue else CyberpunkColorsLight.SantanderBlue
+
+    val orchid: Color
+        @Composable get() = if (LocalThemeMode.current == ThemeMode.DARK) CyberpunkColors.Orchid else CyberpunkColorsLight.Orchid
+}
+
+val CyberpunkColorSchemeDark = darkColors(
     primary = CyberpunkColors.NeonCyan,
     primaryVariant = CyberpunkColors.NeonPurple,
     secondary = CyberpunkColors.NeonMagenta,
@@ -57,6 +162,24 @@ val CyberpunkColorScheme = darkColors(
     onSurface = CyberpunkColors.TextPrimary,
     onError = Color.White
 )
+
+val CyberpunkColorSchemeLight = lightColors(
+    primary = CyberpunkColorsLight.NeonCyan,
+    primaryVariant = CyberpunkColorsLight.NeonPurple,
+    secondary = CyberpunkColorsLight.NeonMagenta,
+    secondaryVariant = CyberpunkColorsLight.NeonPink,
+    background = CyberpunkColorsLight.LightBackground,
+    surface = CyberpunkColorsLight.LightSurface,
+    error = Color(0xFFCC3333),
+    onPrimary = CyberpunkColorsLight.LightBackground,
+    onSecondary = CyberpunkColorsLight.LightBackground,
+    onBackground = CyberpunkColorsLight.TextPrimary,
+    onSurface = CyberpunkColorsLight.TextPrimary,
+    onError = Color.White
+)
+
+// For backward compatibility
+val CyberpunkColorScheme = CyberpunkColorSchemeDark
 
 @Composable
 fun CyberpunkTypography(): Typography {
@@ -121,12 +244,22 @@ fun CyberpunkTypography(): Typography {
 }
 
 @Composable
-fun CyberpunkTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colors = CyberpunkColorScheme,
-        typography = CyberpunkTypography(),
-        content = content
-    )
+fun CyberpunkTheme(
+    themeMode: ThemeMode = ThemeMode.DARK,
+    content: @Composable () -> Unit
+) {
+    val colors = when (themeMode) {
+        ThemeMode.DARK -> CyberpunkColorSchemeDark
+        ThemeMode.LIGHT -> CyberpunkColorSchemeLight
+    }
+
+    CompositionLocalProvider(LocalThemeMode provides themeMode) {
+        MaterialTheme(
+            colors = colors,
+            typography = CyberpunkTypography(),
+            content = content
+        )
+    }
 }
 
 // Animated gradient background

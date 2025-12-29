@@ -2,6 +2,11 @@
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -19,6 +24,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,58 +33,142 @@ import androidx.compose.ui.unit.sp
 import components.FloatingOrb
 import components.GlitchText
 import components.TypewriterText
-import theme.CyberpunkColors
+import theme.CyberpunkThemeColors
+import theme.LocalThemeMode
+import theme.ThemeMode
+import i18n.Language
+import i18n.LocalLanguage
+import i18n.Strings
 import kotlin.random.Random
+
+@Composable
+fun ThemeToggle() {
+    val themeMode = LocalThemeMode.current
+    val toggleTheme = LocalThemeToggle.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
+    val isDark = themeMode == ThemeMode.DARK
+    val borderColor = if (isDark) CyberpunkThemeColors.neonCyan else CyberpunkThemeColors.neonMagenta
+
+    Box(
+        modifier = Modifier
+            .hoverable(interactionSource)
+            .pointerHoverIcon(PointerIcon.Hand)
+            .clickable { toggleTheme() }
+            .clip(RoundedCornerShape(8.dp))
+            .background(CyberpunkThemeColors.card.copy(alpha = if (isHovered) 0.9f else 0.7f))
+            .border(1.dp, borderColor.copy(alpha = if (isHovered) 1f else 0.6f), RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = if (isDark) "[ LIGHT ]" else "[ DARK ]",
+            style = MaterialTheme.typography.caption,
+            color = borderColor
+        )
+    }
+}
+
+@Composable
+fun LanguageToggle() {
+    val themeMode = LocalThemeMode.current
+    val language = LocalLanguage.current
+    val toggleLanguage = LocalLanguageToggle.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
+    val isDark = themeMode == ThemeMode.DARK
+    val borderColor = if (isDark) CyberpunkThemeColors.neonCyan else CyberpunkThemeColors.neonMagenta
+
+    Box(
+        modifier = Modifier
+            .hoverable(interactionSource)
+            .pointerHoverIcon(PointerIcon.Hand)
+            .clickable { toggleLanguage() }
+            .clip(RoundedCornerShape(8.dp))
+            .background(CyberpunkThemeColors.card.copy(alpha = if (isHovered) 0.9f else 0.7f))
+            .border(1.dp, borderColor.copy(alpha = if (isHovered) 1f else 0.6f), RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = when (language) {
+                Language.ES -> "[ EN ]"
+                Language.EN -> "[ ES ]"
+            },
+            style = MaterialTheme.typography.caption,
+            color = borderColor
+        )
+    }
+}
 
 @Composable
 fun SectionHeader() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < 900
+    val strings = Strings.get()
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(if (isMobile) 400.dp else 500.dp)
-            .background(CyberpunkColors.DarkBackground)
+            .background(CyberpunkThemeColors.background)
     ) {
+        // Language toggle in top left corner
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            LanguageToggle()
+        }
+
+        // Theme toggle in top right corner
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            ThemeToggle()
+        }
+
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = if (isMobile) 20.dp else 40.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "[ SYSTEM INITIALIZED ]",
+                text = strings.systemInitialized,
                 style = MaterialTheme.typography.caption,
-                color = CyberpunkColors.NeonGreen
+                color = CyberpunkThemeColors.neonGreen
             )
             Spacer(modifier = Modifier.height(if (isMobile) 16.dp else 24.dp))
             GlitchText(
-                text = "ALVARO QUINTANA",
+                text = strings.name,
                 style = MaterialTheme.typography.h1.copy(
                     fontSize = if (isMobile) 32.sp else 64.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                primaryColor = CyberpunkColors.TextPrimary
+                primaryColor = CyberpunkThemeColors.textPrimary
             )
             Spacer(modifier = Modifier.height(if (isMobile) 16.dp else 24.dp))
             Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "> ",
                     style = if (isMobile) MaterialTheme.typography.h5 else MaterialTheme.typography.h3,
-                    color = CyberpunkColors.NeonCyan
+                    color = CyberpunkThemeColors.neonCyan
                 )
                 TypewriterText(
-                    text = "MOBILE & AI SPECIALIST",
+                    text = strings.subtitle,
                     style = (if (isMobile) MaterialTheme.typography.h5 else MaterialTheme.typography.h3).copy(fontWeight = FontWeight.Bold),
-                    color = CyberpunkColors.NeonCyan,
+                    color = CyberpunkThemeColors.neonCyan,
                     typingSpeed = 80L
                 )
             }
             Spacer(modifier = Modifier.height(if (isMobile) 20.dp else 32.dp))
             Text(
-                text = "Android | iOS | KMP | AI Agent Orchestration",
+                text = strings.platforms,
                 style = if (isMobile) MaterialTheme.typography.body1 else MaterialTheme.typography.h5,
-                color = CyberpunkColors.TextSecondary,
+                color = CyberpunkThemeColors.textSecondary,
                 textAlign = TextAlign.Center
             )
 
@@ -88,24 +179,24 @@ fun SectionHeader() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Built with ",
+                    text = strings.builtWith,
                     style = MaterialTheme.typography.caption.copy(
                         fontSize = if (isMobile) 11.sp else 13.sp
                     ),
-                    color = CyberpunkColors.NeonMagenta.copy(alpha = 0.8f)
+                    color = CyberpunkThemeColors.neonMagenta.copy(alpha = 0.8f)
                 )
                 Icon(
                     imageVector = Icons.Filled.Favorite,
                     contentDescription = "love",
-                    tint = CyberpunkColors.NeonMagenta,
+                    tint = CyberpunkThemeColors.neonMagenta,
                     modifier = Modifier.size(if (isMobile) 14.dp else 16.dp)
                 )
                 Text(
-                    text = " using Kotlin",
+                    text = strings.usingKotlin,
                     style = MaterialTheme.typography.caption.copy(
                         fontSize = if (isMobile) 11.sp else 13.sp
                     ),
-                    color = CyberpunkColors.NeonMagenta.copy(alpha = 0.8f)
+                    color = CyberpunkThemeColors.neonMagenta.copy(alpha = 0.8f)
                 )
             }
         }

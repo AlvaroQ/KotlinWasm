@@ -1,6 +1,7 @@
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -20,19 +21,31 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.SectionTitle
+import data.AIProjectsData
+import data.Breakpoints
+import kotlinx.browser.window
 import theme.CyberpunkColors
+import theme.CyberpunkColorsLight
+import theme.CyberpunkThemeColors
+import theme.LocalThemeMode
+import theme.ThemeMode
+import i18n.Strings
 
 @Composable
 fun SectionAIProjects() {
     val screenWidth = LocalScreenWidth.current
-    val isMobile = screenWidth < 900
-    // Usar columna hasta pantallas muy grandes (>2000px) - con 3 tarjetas necesita más espacio
-    val useColumnLayout = screenWidth < 2000
+    val isMobile = screenWidth < Breakpoints.MOBILE
+    val useColumnLayout = screenWidth < Breakpoints.WIDE
+    val strings = Strings.get()
+
+    val projects = AIProjectsData.projects
 
     Column(
         modifier = Modifier
@@ -40,9 +53,9 @@ fun SectionAIProjects() {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        CyberpunkColors.DarkBackground,
-                        Color(0xFF0A0A1A),
-                        CyberpunkColors.DarkBackground
+                        CyberpunkThemeColors.background,
+                        CyberpunkThemeColors.background,
+                        CyberpunkThemeColors.background
                     )
                 )
             )
@@ -57,35 +70,34 @@ fun SectionAIProjects() {
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
-                tint = CyberpunkColors.NeonMagenta,
+                tint = CyberpunkThemeColors.neonMagenta,
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "< LATEST AI PROJECTS />",
+                text = strings.latestAiProjects,
                 style = MaterialTheme.typography.h3,
-                color = CyberpunkColors.NeonMagenta
+                color = CyberpunkThemeColors.neonMagenta
             )
             Spacer(modifier = Modifier.width(16.dp))
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
-                tint = CyberpunkColors.NeonMagenta,
+                tint = CyberpunkThemeColors.neonMagenta,
                 modifier = Modifier.size(32.dp)
             )
         }
 
         Text(
-            text = "Showcasing my latest AI-powered applications",
+            text = strings.showcasingProjects,
             style = MaterialTheme.typography.body1,
-            color = CyberpunkColors.TextSecondary,
+            color = CyberpunkThemeColors.textSecondary,
             modifier = Modifier.padding(top = 8.dp)
         )
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
         if (useColumnLayout) {
-            // Column layout - vertical stack
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,114 +105,63 @@ fun SectionAIProjects() {
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AIProjectCard(
-                    title = "Translation & Voice AI",
-                    subtitle = "100% Local Processing",
-                    description = "Desktop app that converts documents (PDF, Word, TXT) into high-quality speech using local AI models. No cloud, no costs, full privacy.",
-                    features = listOf(
-                        "50+ Neural Voices",
-                        "200+ Languages",
-                        "Offline Processing",
-                        "Document Support"
-                    ),
-                    techStack = listOf("Python", "PyTorch", "ONNX", "Kokoro-82M", "NLLB-200"),
-                    accentColor = CyberpunkColors.NeonCyan,
-                    githubUrl = "github.com/AlvaroQ/TranslationAndVoiceLocally",
-                    useFullWidth = true
-                )
-
-                AIProjectCard(
-                    title = "Chart Analyzer and Stock News",
-                    subtitle = "Real-time Market Intelligence",
-                    description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
-                    features = listOf(
-                        "Real-time News AI",
-                        "Chart Analysis",
-                        "Pattern Detection",
-                        "Technical Indicators"
-                    ),
-                    techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
-                    accentColor = CyberpunkColors.NeonGreen,
-                    githubUrl = "github.com/AlvaroQ/chart-analyzer-and-stock-news",
-                    useFullWidth = true
-                )
-
-                AIProjectCard(
-                    title = "Lotto Scan",
-                    subtitle = "AI-Powered OCR Scanner",
-                    description = "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models.",
-                    features = listOf(
-                        "Multi-Lottery Support",
-                        "Offline OCR",
-                        "Confidence Scoring",
-                        "Local Storage"
-                    ),
-                    techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
-                    accentColor = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
-                    githubUrl = "github.com/AlvaroQ/lotto-scan",
-                    useFullWidth = true
-                )
+                projects.forEach { project ->
+                    AIProjectCard(
+                        title = project.title,
+                        subtitle = project.subtitle,
+                        description = project.description,
+                        features = project.features,
+                        techStack = project.techStack,
+                        accentColor = project.accentColor,
+                        githubUrl = project.githubUrl,
+                        useFullWidth = true
+                    )
+                }
             }
         } else {
-            // Row layout for larger screens - cards con weight para adaptarse
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                AIProjectCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Translation & Voice AI",
-                    subtitle = "100% Local Processing",
-                    description = "Desktop app that converts documents (PDF, Word, TXT) into high-quality speech using local AI models. No cloud, no costs, full privacy.",
-                    features = listOf(
-                        "50+ Neural Voices",
-                        "200+ Languages",
-                        "Offline Processing",
-                        "Document Support"
-                    ),
-                    techStack = listOf("Python", "PyTorch", "ONNX", "Kokoro-82M", "NLLB-200"),
-                    accentColor = CyberpunkColors.NeonCyan,
-                    githubUrl = "github.com/AlvaroQ/TranslationAndVoiceLocally"
-                )
-
-                AIProjectCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Chart Analyzer and Stock News",
-                    subtitle = "Real-time Market Intelligence",
-                    description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
-                    features = listOf(
-                        "Real-time News AI",
-                        "Chart Analysis",
-                        "Pattern Detection",
-                        "Technical Indicators"
-                    ),
-                    techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
-                    accentColor = CyberpunkColors.NeonGreen,
-                    githubUrl = "github.com/AlvaroQ/chart-analyzer-and-stock-news"
-                )
-
-                AIProjectCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Lotto Scan",
-                    subtitle = "AI-Powered OCR Scanner",
-                    description = "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models.",
-                    features = listOf(
-                        "Multi-Lottery Support",
-                        "Offline OCR",
-                        "Confidence Scoring",
-                        "Local Storage"
-                    ),
-                    techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
-                    accentColor = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
-                    githubUrl = "github.com/AlvaroQ/lotto-scan"
-                )
+                projects.forEach { project ->
+                    AIProjectCard(
+                        modifier = Modifier.weight(1f),
+                        title = project.title,
+                        subtitle = project.subtitle,
+                        description = project.description,
+                        features = project.features,
+                        techStack = project.techStack,
+                        accentColor = project.accentColor,
+                        githubUrl = project.githubUrl
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
+    }
+}
 
+/**
+ * Maps dark theme accent colors to their light theme equivalents
+ */
+@Composable
+private fun getThemeAwareAccentColor(color: Color): Color {
+    val isLightMode = LocalThemeMode.current == ThemeMode.LIGHT
+    if (!isLightMode) return color
+
+    return when (color) {
+        CyberpunkColors.NeonCyan -> CyberpunkColorsLight.NeonCyan
+        CyberpunkColors.NeonGreen -> CyberpunkColorsLight.NeonGreen
+        CyberpunkColors.NeonMagenta -> CyberpunkColorsLight.NeonMagenta
+        CyberpunkColors.NeonPurple -> CyberpunkColorsLight.NeonPurple
+        CyberpunkColors.NeonPink -> CyberpunkColorsLight.NeonPink
+        CyberpunkColors.NeonYellow -> CyberpunkColorsLight.NeonYellow
+        CyberpunkColors.Orchid -> CyberpunkColorsLight.Orchid
+        CyberpunkColors.SantanderBlue -> CyberpunkColorsLight.SantanderBlue
+        else -> color
     }
 }
 
@@ -219,6 +180,9 @@ private fun AIProjectCard(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
+    // Use theme-aware color
+    val themeAccentColor = getThemeAwareAccentColor(accentColor)
+
     val glowAlpha by animateFloatAsState(
         targetValue = if (isHovered) 0.4f else 0.1f,
         animationSpec = tween(300)
@@ -236,7 +200,7 @@ private fun AIProjectCard(
             .drawBehind {
                 // Glow effect
                 drawRoundRect(
-                    color = accentColor.copy(alpha = glowAlpha),
+                    color = themeAccentColor.copy(alpha = glowAlpha),
                     cornerRadius = CornerRadius(16.dp.toPx()),
                     size = size.copy(
                         width = size.width + 20,
@@ -246,11 +210,11 @@ private fun AIProjectCard(
                 )
             }
             .clip(RoundedCornerShape(16.dp))
-            .background(CyberpunkColors.DarkCard)
+            .background(CyberpunkThemeColors.card)
             .border(
                 width = if (isHovered) 2.dp else 1.dp,
                 brush = Brush.linearGradient(
-                    colors = listOf(accentColor, accentColor.copy(alpha = 0.5f))
+                    colors = listOf(themeAccentColor, themeAccentColor.copy(alpha = 0.5f))
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -266,13 +230,13 @@ private fun AIProjectCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.h5,
-                    color = accentColor,
+                    color = themeAccentColor,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.caption,
-                    color = CyberpunkColors.TextSecondary
+                    color = CyberpunkThemeColors.textSecondary
                 )
             }
 
@@ -280,13 +244,13 @@ private fun AIProjectCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(accentColor.copy(alpha = 0.2f))
+                    .background(themeAccentColor.copy(alpha = 0.2f))
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = "AI",
                     style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
-                    color = accentColor
+                    color = themeAccentColor
                 )
             }
         }
@@ -297,7 +261,7 @@ private fun AIProjectCard(
         Text(
             text = description,
             style = MaterialTheme.typography.body2,
-            color = CyberpunkColors.TextPrimary,
+            color = CyberpunkThemeColors.textPrimary,
             lineHeight = 22.sp
         )
 
@@ -307,7 +271,7 @@ private fun AIProjectCard(
         Text(
             text = "KEY FEATURES",
             style = MaterialTheme.typography.caption.copy(letterSpacing = 2.sp),
-            color = CyberpunkColors.TextSecondary
+            color = CyberpunkThemeColors.textSecondary
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -318,12 +282,12 @@ private fun AIProjectCard(
         ) {
             Column {
                 features.take(2).forEach { feature ->
-                    FeatureItem(feature, accentColor)
+                    FeatureItem(feature, themeAccentColor)
                 }
             }
             Column {
                 features.drop(2).forEach { feature ->
-                    FeatureItem(feature, accentColor)
+                    FeatureItem(feature, themeAccentColor)
                 }
             }
         }
@@ -334,7 +298,7 @@ private fun AIProjectCard(
         Text(
             text = "TECH STACK",
             style = MaterialTheme.typography.caption.copy(letterSpacing = 2.sp),
-            color = CyberpunkColors.TextSecondary
+            color = CyberpunkThemeColors.textSecondary
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -344,27 +308,37 @@ private fun AIProjectCard(
             horizontalArrangement = Arrangement.Start
         ) {
             techStack.forEach { tech ->
-                TechChip(tech, accentColor)
+                TechChip(tech, themeAccentColor)
                 Spacer(modifier = Modifier.width(6.dp))
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // GitHub link
+        // GitHub link - clickable
+        val linkInteractionSource = remember { MutableInteractionSource() }
+        val isLinkHovered by linkInteractionSource.collectIsHoveredAsState()
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp))
-                .background(accentColor.copy(alpha = 0.1f))
-                .border(1.dp, accentColor.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                .background(if (isLinkHovered) themeAccentColor.copy(alpha = 0.2f) else themeAccentColor.copy(alpha = 0.1f))
+                .border(
+                    width = if (isLinkHovered) 2.dp else 1.dp,
+                    color = themeAccentColor.copy(alpha = if (isLinkHovered) 0.6f else 0.3f),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .hoverable(linkInteractionSource)
+                .pointerHoverIcon(PointerIcon.Hand)
+                .clickable { openGitHubUrl(githubUrl) }
                 .padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "> $githubUrl",
+                text = "> View on GitHub",
                 style = MaterialTheme.typography.caption,
-                color = accentColor
+                color = themeAccentColor
             )
         }
     }
@@ -386,7 +360,7 @@ private fun FeatureItem(text: String, color: Color) {
         Text(
             text = text,
             style = MaterialTheme.typography.body2,
-            color = CyberpunkColors.TextPrimary
+            color = CyberpunkThemeColors.textPrimary
         )
     }
 }
@@ -431,7 +405,12 @@ private fun StatItem(value: String, label: String, color: Color) {
         Text(
             text = label,
             style = MaterialTheme.typography.caption,
-            color = CyberpunkColors.TextSecondary
+            color = CyberpunkThemeColors.textSecondary
         )
     }
+}
+
+// Open URL function - top-level for WASM compatibility
+private fun openGitHubUrl(url: String) {
+    window.open(url, "_blank")
 }

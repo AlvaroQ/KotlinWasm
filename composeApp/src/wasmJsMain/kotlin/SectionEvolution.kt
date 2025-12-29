@@ -1,4 +1,5 @@
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -14,90 +15,40 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.SectionTitle
-import theme.CyberpunkColors
-
-data class CareerNode(
-    val company: String,
-    val period: String,
-    val role: String,
-    val description: String,
-    val skills: List<String>,
-    val color: Color,
-    val icon: String,
-    val type: String
-)
+import data.Breakpoints
+import data.CareerData
+import data.CareerNode
+import data.resolve
+import theme.CyberpunkThemeColors
+import i18n.Strings
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SectionEvolution() {
-    val careerTimeline = listOf(
-        CareerNode(
-            company = "TheRanking",
-            period = "2013 - 2014",
-            role = "Android & iOS Developer",
-            description = "Cross-platform development with Titanium. Built startup apps with social integrations.",
-            skills = listOf("Titanium", "Java", "REST APIs", "Git"),
-            color = CyberpunkColors.NeonCyan,
-            icon = "TR",
-            type = "STARTUP"
-        ),
-        CareerNode(
-            company = "TalentoMOBILE",
-            period = "2015 - 2017",
-            role = "Senior Mobile Developer",
-            description = "Santander Bank projects: biometric signature, face recognition, voice commands, NFC.",
-            skills = listOf("Android", "Biometrics", "voice commands", "Security"),
-            color = CyberpunkColors.NeonGreen,
-            icon = "TM",
-            type = "CONSULTANT"
-        ),
-        CareerNode(
-            company = "Santander UK",
-            period = "2017",
-            role = "Senior Developer & Android Specialist",
-            description = "On-site in Milton Keynes. Retail & Business apps with Kotlin, NFC, OCR, geolocation.",
-            skills = listOf("Kotlin", "NFC", "OCR", "MVP"),
-            color = Color(0xFF4A90D9), // Santander blue-ish
-            icon = "UK",
-            type = "CORPORATE"
-        ),
-        CareerNode(
-            company = "B-FY",
-            period = "2018 - Present",
-            role = "App Development Director",
-            description = "Leading multi-platform development: Android, iOS, Desktop (Win/Mac/Linux) with KMP.",
-            skills = listOf("KMP", "iOS", "Compose", "Ktor"),
-            color = CyberpunkColors.NeonMagenta,
-            icon = "BF",
-            type = "STARTUP"
-        ),
-        CareerNode(
-            company = "AI Specialist",
-            period = "2024 - Present",
-            role = "AI Agent Orchestrator",
-            description = "Building intelligent systems with LLMs, autonomous agents, and AI-powered workflows.",
-            skills = listOf("Claude", "LangChain", "MCP", "RAG"),
-            color = Color(0xFFDA70D6), // Orchid - más brillante que NeonPurple
-            icon = "AI",
-            type = "SPECIALIST"
-        )
-    )
+    val careerTimeline = CareerData.timeline
+    val strings = Strings.get()
 
     val screenWidth = LocalScreenWidth.current
-    val isMobile = screenWidth < 900
-    val isTablet = screenWidth in 900..1200
-    val showConnectionLines = screenWidth > 1400
+    val isMobile = screenWidth < Breakpoints.MOBILE
+    val isTablet = screenWidth in Breakpoints.MOBILE..Breakpoints.TABLET
+    val showConnectionLines = screenWidth > Breakpoints.DESKTOP
+
+    // Get colors before drawBehind (non-composable context)
+    val backgroundColor = CyberpunkThemeColors.background
+    val gridLinesColor = CyberpunkThemeColors.gridLines
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(CyberpunkColors.DarkBackground)
+            .background(backgroundColor)
             .drawBehind {
-                val lineColor = CyberpunkColors.GridLines.copy(alpha = 0.3f)
+                val lineColor = gridLinesColor.copy(alpha = 0.3f)
                 for (i in 0..10) {
                     val y = size.height * (i / 10f)
                     drawLine(lineColor, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
@@ -106,14 +57,14 @@ fun SectionEvolution() {
             .padding(vertical = if (isMobile) 40.dp else 80.dp, horizontal = if (isMobile) 20.dp else 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SectionTitle(title = "CAREER TIMELINE", color = CyberpunkColors.NeonCyan)
+        SectionTitle(title = strings.careerTimeline, color = CyberpunkThemeColors.neonCyan)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "From startup developer to enterprise architect to AI specialist",
+            text = strings.careerSubtitle,
             style = MaterialTheme.typography.body1,
-            color = CyberpunkColors.TextSecondary,
+            color = CyberpunkThemeColors.textSecondary,
             textAlign = TextAlign.Center
         )
 
@@ -138,8 +89,8 @@ fun SectionEvolution() {
                     // Solo mostrar líneas de conexión en pantallas muy grandes
                     if (index < 2 && showConnectionLines) {
                         ConnectionLine(
-                            colorStart = node.color,
-                            colorEnd = careerTimeline[index + 1].color
+                            colorStartTheme = node.themeColor,
+                            colorEndTheme = careerTimeline[index + 1].themeColor
                         )
                     }
                 }
@@ -155,8 +106,8 @@ fun SectionEvolution() {
                     // Solo mostrar líneas de conexión en pantallas muy grandes
                     if (index < 1 && showConnectionLines) {
                         ConnectionLine(
-                            colorStart = node.color,
-                            colorEnd = careerTimeline[4].color
+                            colorStartTheme = node.themeColor,
+                            colorEndTheme = careerTimeline[4].themeColor
                         )
                     }
                 }
@@ -171,13 +122,13 @@ fun SectionEvolution() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(CyberpunkColors.DarkCard)
+                    .background(CyberpunkThemeColors.card)
                     .border(
                         1.dp,
                         Brush.horizontalGradient(
                             listOf(
-                                CyberpunkColors.NeonCyan.copy(alpha = 0.5f),
-                                CyberpunkColors.NeonMagenta.copy(alpha = 0.5f)
+                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
+                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.5f)
                             )
                         ),
                         RoundedCornerShape(12.dp)
@@ -187,25 +138,25 @@ fun SectionEvolution() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                    ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkColors.NeonGreen)
-                    ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkColors.NeonCyan)
+                    ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkThemeColors.neonGreen)
+                    ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkThemeColors.neonCyan)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                    ExperienceStat(value = "4+", label = "Companies", color = CyberpunkColors.NeonMagenta)
-                    ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkColors.NeonPurple)
+                    ExperienceStat(value = "4+", label = "Companies", color = CyberpunkThemeColors.neonMagenta)
+                    ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkThemeColors.neonPurple)
                 }
             }
         } else {
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(CyberpunkColors.DarkCard)
+                    .background(CyberpunkThemeColors.card)
                     .border(
                         1.dp,
                         Brush.horizontalGradient(
                             listOf(
-                                CyberpunkColors.NeonCyan.copy(alpha = 0.5f),
-                                CyberpunkColors.NeonMagenta.copy(alpha = 0.5f)
+                                CyberpunkThemeColors.neonCyan.copy(alpha = 0.5f),
+                                CyberpunkThemeColors.neonMagenta.copy(alpha = 0.5f)
                             )
                         ),
                         RoundedCornerShape(12.dp)
@@ -213,10 +164,10 @@ fun SectionEvolution() {
                     .padding(32.dp),
                 horizontalArrangement = Arrangement.spacedBy(60.dp)
             ) {
-                ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkColors.NeonGreen)
-                ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkColors.NeonCyan)
-                ExperienceStat(value = "4+", label = "Companies", color = CyberpunkColors.NeonMagenta)
-                ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkColors.NeonPurple)
+                ExperienceStat(value = "12+", label = "Years in Tech", color = CyberpunkThemeColors.neonGreen)
+                ExperienceStat(value = "7+", label = "Years at B-FY", color = CyberpunkThemeColors.neonCyan)
+                ExperienceStat(value = "4+", label = "Companies", color = CyberpunkThemeColors.neonMagenta)
+                ExperienceStat(value = "5+", label = "Platforms", color = CyberpunkThemeColors.neonPurple)
             }
         }
     }
@@ -234,7 +185,7 @@ private fun ExperienceStat(value: String, label: String, color: Color) {
         Text(
             text = label,
             style = MaterialTheme.typography.caption,
-            color = CyberpunkColors.TextSecondary
+            color = CyberpunkThemeColors.textSecondary
         )
     }
 }
@@ -246,6 +197,9 @@ private fun CareerNodeCard(
     isMobile: Boolean = false,
     isTablet: Boolean = false
 ) {
+    // Resolve theme-aware color
+    val nodeColor = node.themeColor.resolve()
+
     val infiniteTransition = rememberInfiniteTransition()
     val glowAlpha by infiniteTransition.animateFloat(
         initialValue = 0.3f,
@@ -258,8 +212,8 @@ private fun CareerNodeCard(
 
     val cardWidth = when {
         isMobile -> 100.dp
-        isTablet -> 150.dp
-        else -> 200.dp
+        isTablet -> 180.dp
+        else -> 220.dp
     }
 
     Column(
@@ -271,7 +225,7 @@ private fun CareerNodeCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(node.color.copy(alpha = 0.2f))
+                    .background(nodeColor.copy(alpha = 0.2f))
                     .padding(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Text(
@@ -281,7 +235,7 @@ private fun CareerNodeCard(
                         letterSpacing = 1.sp,
                         fontWeight = FontWeight.Bold
                     ),
-                    color = node.color
+                    color = nodeColor
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -294,38 +248,59 @@ private fun CareerNodeCard(
                 letterSpacing = if (isMobile) 1.sp else 2.sp,
                 fontSize = if (isMobile) 8.sp else 12.sp
             ),
-            color = node.color.copy(alpha = 0.8f)
+            color = nodeColor
         )
 
         Spacer(modifier = Modifier.height(if (isMobile) 6.dp else 12.dp))
 
-        // Icon circle
+        // Icon circle or logo
+        val circleSize = if (isMobile) 45.dp else if (isPrimary) 80.dp else 70.dp
         Box(
             modifier = Modifier
-                .size(if (isMobile) 45.dp else if (isPrimary) 80.dp else 70.dp)
+                .size(circleSize)
                 .drawBehind {
                     drawCircle(
-                        color = node.color.copy(alpha = glowAlpha),
+                        color = nodeColor.copy(alpha = glowAlpha),
                         radius = size.minDimension / 2 + (if (isMobile) 8f else 15f)
                     )
                 }
                 .clip(CircleShape)
                 .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            node.color.copy(alpha = 0.9f),
-                            node.color.copy(alpha = 0.4f)
+                    if (node.logoRes != null) {
+                        Brush.radialGradient(
+                            colors = listOf(
+                                CyberpunkThemeColors.logoBackground,
+                                CyberpunkThemeColors.logoBackground
+                            )
                         )
-                    )
+                    } else {
+                        Brush.radialGradient(
+                            colors = listOf(
+                                nodeColor.copy(alpha = 0.9f),
+                                nodeColor.copy(alpha = 0.4f)
+                            )
+                        )
+                    }
                 )
-                .border(if (isMobile) 1.dp else 2.dp, node.color, CircleShape),
+                .border(if (isMobile) 1.dp else 2.dp, nodeColor, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = node.icon,
-                style = (if (isMobile) MaterialTheme.typography.body2 else MaterialTheme.typography.h5).copy(fontWeight = FontWeight.Bold),
-                color = CyberpunkColors.DarkBackground
-            )
+            if (node.logoRes != null) {
+                Image(
+                    painter = painterResource(node.logoRes),
+                    contentDescription = node.company,
+                    modifier = Modifier
+                        .size(circleSize * 0.7f)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Fit
+                )
+            } else {
+                Text(
+                    text = node.icon,
+                    style = (if (isMobile) MaterialTheme.typography.body2 else MaterialTheme.typography.h5).copy(fontWeight = FontWeight.Bold),
+                    color = CyberpunkThemeColors.background
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(if (isMobile) 8.dp else 16.dp))
@@ -334,7 +309,7 @@ private fun CareerNodeCard(
         Text(
             text = node.company,
             style = (if (isMobile) MaterialTheme.typography.caption else MaterialTheme.typography.h6).copy(fontWeight = FontWeight.Bold),
-            color = node.color,
+            color = nodeColor,
             textAlign = TextAlign.Center,
             maxLines = if (isMobile) 2 else 1
         )
@@ -346,11 +321,15 @@ private fun CareerNodeCard(
             text = node.role,
             style = MaterialTheme.typography.caption.copy(
                 fontWeight = FontWeight.Medium,
-                fontSize = if (isMobile) 8.sp else 14.sp
+                fontSize = when {
+                    isMobile -> 8.sp
+                    isTablet -> 12.sp
+                    else -> 14.sp
+                }
             ),
-            color = CyberpunkColors.TextPrimary,
+            color = CyberpunkThemeColors.textPrimary,
             textAlign = TextAlign.Center,
-            maxLines = if (isMobile) 2 else 1
+            maxLines = 2
         )
 
         // Description and Skills - only on tablet and desktop
@@ -360,7 +339,7 @@ private fun CareerNodeCard(
             Text(
                 text = node.description,
                 style = MaterialTheme.typography.caption,
-                color = CyberpunkColors.TextSecondary,
+                color = CyberpunkThemeColors.textSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
@@ -373,7 +352,7 @@ private fun CareerNodeCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 node.skills.take(2).forEach { skill ->
-                    SkillChip(skill = skill, color = node.color)
+                    SkillChip(skill = skill, color = nodeColor)
                 }
             }
             if (node.skills.size > 2) {
@@ -383,7 +362,7 @@ private fun CareerNodeCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     node.skills.drop(2).forEach { skill ->
-                        SkillChip(skill = skill, color = node.color)
+                        SkillChip(skill = skill, color = nodeColor)
                     }
                 }
             }
@@ -410,7 +389,10 @@ private fun SkillChip(skill: String, color: Color) {
 }
 
 @Composable
-private fun ConnectionLine(colorStart: Color, colorEnd: Color) {
+private fun ConnectionLine(colorStartTheme: data.ThemeColor, colorEndTheme: data.ThemeColor) {
+    val colorStart = colorStartTheme.resolve()
+    val colorEnd = colorEndTheme.resolve()
+
     val infiniteTransition = rememberInfiniteTransition()
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,

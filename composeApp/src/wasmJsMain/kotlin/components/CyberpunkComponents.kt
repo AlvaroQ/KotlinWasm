@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import theme.CyberpunkColors
+import theme.CyberpunkThemeColors
 import kotlin.random.Random
 
 // Typewriter Effect Text
@@ -36,7 +36,7 @@ fun TypewriterText(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.h2,
-    color: Color = CyberpunkColors.NeonCyan,
+    color: Color = CyberpunkThemeColors.neonCyan,
     typingSpeed: Long = 100L,
     startDelay: Long = 500L,
     showCursor: Boolean = true
@@ -73,9 +73,9 @@ fun GlitchText(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.h1,
-    primaryColor: Color = CyberpunkColors.NeonCyan,
-    glitchColor1: Color = CyberpunkColors.NeonMagenta,
-    glitchColor2: Color = CyberpunkColors.NeonGreen
+    primaryColor: Color = CyberpunkThemeColors.neonCyan,
+    glitchColor1: Color = CyberpunkThemeColors.neonMagenta,
+    glitchColor2: Color = CyberpunkThemeColors.neonGreen
 ) {
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -131,8 +131,8 @@ fun GlitchText(
 @Composable
 fun NeonCard(
     modifier: Modifier = Modifier,
-    glowColor: Color = CyberpunkColors.NeonCyan,
-    backgroundColor: Color = CyberpunkColors.DarkCard,
+    glowColor: Color = CyberpunkThemeColors.neonCyan,
+    backgroundColor: Color = CyberpunkThemeColors.card,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -182,7 +182,7 @@ fun NeonSkillBar(
     skill: String,
     level: Float, // 0f to 1f
     modifier: Modifier = Modifier,
-    barColor: Color = CyberpunkColors.NeonCyan,
+    barColor: Color = CyberpunkThemeColors.neonCyan,
     animationDelay: Int = 0
 ) {
     var animatedLevel by remember { mutableStateOf(0f) }
@@ -205,7 +205,7 @@ fun NeonSkillBar(
             Text(
                 text = skill,
                 style = MaterialTheme.typography.body1,
-                color = CyberpunkColors.TextPrimary
+                color = CyberpunkThemeColors.textPrimary
             )
             Text(
                 text = "${(animatedValue * 100).toInt()}%",
@@ -221,7 +221,7 @@ fun NeonSkillBar(
                 .fillMaxWidth()
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(CyberpunkColors.DarkCard)
+                .background(CyberpunkThemeColors.card)
         ) {
             Box(
                 modifier = Modifier
@@ -252,8 +252,8 @@ fun NeonSkillBar(
 fun TerminalText(
     lines: List<String>,
     modifier: Modifier = Modifier,
-    promptColor: Color = CyberpunkColors.NeonGreen,
-    textColor: Color = CyberpunkColors.TextPrimary
+    promptColor: Color = CyberpunkThemeColors.neonGreen,
+    textColor: Color = CyberpunkThemeColors.textPrimary
 ) {
     var visibleLines by remember { mutableStateOf(0) }
 
@@ -268,7 +268,7 @@ fun TerminalText(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(Color(0xFF0D0D0D))
-            .border(1.dp, CyberpunkColors.GridLines, RoundedCornerShape(8.dp))
+            .border(1.dp, CyberpunkThemeColors.gridLines, RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
         // Terminal header
@@ -339,7 +339,7 @@ fun TerminalText(
 fun SectionTitle(
     title: String,
     modifier: Modifier = Modifier,
-    color: Color = CyberpunkColors.NeonCyan
+    color: Color = CyberpunkThemeColors.neonCyan
 ) {
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -387,7 +387,7 @@ fun SectionTitle(
 @Composable
 fun FloatingOrb(
     modifier: Modifier = Modifier,
-    color: Color = CyberpunkColors.NeonCyan,
+    color: Color = CyberpunkThemeColors.neonCyan,
     size: Dp = 100.dp
 ) {
     val infiniteTransition = rememberInfiniteTransition()
