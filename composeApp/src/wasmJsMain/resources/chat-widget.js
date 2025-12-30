@@ -8,6 +8,7 @@ class PortfolioChatWidget {
     this.lang = options.lang || 'es';
     this.theme = options.theme || 'dark';
     this.isOpen = false;
+    this.hasShownSuggestions = false;
 
     this.translations = {
       es: {
@@ -17,7 +18,12 @@ class PortfolioChatWidget {
         thinking: 'Pensando...',
         greeting: '¡Hola! Soy el asistente virtual de Álvaro. Pregúntame sobre su experiencia, proyectos o habilidades.',
         error: 'Error al procesar tu pregunta. Intenta de nuevo.',
-        toggle: 'Abrir chat'
+        toggle: 'Abrir chat',
+        suggestions: [
+          '¿Experiencia con Kotlin?',
+          '¿Proyectos de IA?',
+          '¿Años de experiencia?'
+        ]
       },
       en: {
         title: 'Chat with Álvaro',
@@ -26,7 +32,12 @@ class PortfolioChatWidget {
         thinking: 'Thinking...',
         greeting: "Hi! I'm Álvaro's virtual assistant. Ask me about his experience, projects, or skills.",
         error: 'Error processing your question. Please try again.',
-        toggle: 'Open chat'
+        toggle: 'Open chat',
+        suggestions: [
+          'Kotlin experience?',
+          'AI projects?',
+          'Years of experience?'
+        ]
       }
     };
 
@@ -66,11 +77,22 @@ class PortfolioChatWidget {
         justify-content: center;
         box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
         transition: transform 0.3s, box-shadow 0.3s;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+        }
+        50% {
+          box-shadow: 0 4px 30px rgba(0, 255, 255, 0.7), 0 0 40px rgba(255, 0, 128, 0.3);
+        }
       }
 
       #chat-toggle-btn:hover {
         transform: scale(1.1);
         box-shadow: 0 6px 30px rgba(0, 255, 255, 0.6);
+        animation: none;
       }
 
       #chat-toggle-btn svg {
@@ -85,7 +107,7 @@ class PortfolioChatWidget {
         bottom: 70px;
         right: 0;
         width: 360px;
-        height: 480px;
+        height: 500px;
         border-radius: 16px;
         overflow: hidden;
         flex-direction: column;
@@ -176,6 +198,45 @@ class PortfolioChatWidget {
         color: #1A1A2E;
         align-self: flex-start;
         border-bottom-left-radius: 4px;
+      }
+
+      /* Suggestions */
+      .chat-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 16px 12px;
+      }
+
+      .chat-suggestion {
+        padding: 8px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+      }
+
+      #chat-panel.dark .chat-suggestion {
+        background: rgba(0, 255, 255, 0.1);
+        color: #00FFFF;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+      }
+
+      #chat-panel.dark .chat-suggestion:hover {
+        background: rgba(0, 255, 255, 0.2);
+        border-color: rgba(0, 255, 255, 0.5);
+      }
+
+      #chat-panel.light .chat-suggestion {
+        background: rgba(0, 184, 184, 0.1);
+        color: #008080;
+        border: 1px solid rgba(0, 184, 184, 0.3);
+      }
+
+      #chat-panel.light .chat-suggestion:hover {
+        background: rgba(0, 184, 184, 0.2);
+        border-color: rgba(0, 184, 184, 0.5);
       }
 
       .chat-input-container {
@@ -282,7 +343,7 @@ class PortfolioChatWidget {
       @media (max-width: 420px) {
         #chat-panel {
           width: calc(100vw - 40px);
-          height: 400px;
+          height: 420px;
           right: -10px;
         }
       }
@@ -300,6 +361,7 @@ class PortfolioChatWidget {
           <button class="chat-close" id="chat-close" aria-label="Close chat">&times;</button>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-suggestions" id="chat-suggestions"></div>
         <div class="chat-input-container">
           <input type="text" class="chat-input" id="chat-input" placeholder="${this.t.placeholder}" autocomplete="off">
           <button class="chat-send" id="chat-send" aria-label="${this.t.send}">
@@ -344,10 +406,11 @@ class PortfolioChatWidget {
     panel.classList.add('open');
     this.isOpen = true;
 
-    // Show greeting on first open
+    // Show greeting and suggestions on first open
     const messages = document.getElementById('chat-messages');
     if (messages.children.length === 0) {
       this.addMessage('assistant', this.t.greeting);
+      this.showSuggestions();
     }
 
     document.getElementById('chat-input').focus();
@@ -359,6 +422,29 @@ class PortfolioChatWidget {
     this.isOpen = false;
   }
 
+  showSuggestions() {
+    if (this.hasShownSuggestions) return;
+
+    const container = document.getElementById('chat-suggestions');
+    container.innerHTML = this.t.suggestions.map(s =>
+      `<button class="chat-suggestion">${s}</button>`
+    ).join('');
+
+    container.querySelectorAll('.chat-suggestion').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('chat-input').value = btn.textContent;
+        this.handleSend();
+        this.hideSuggestions();
+      });
+    });
+  }
+
+  hideSuggestions() {
+    const container = document.getElementById('chat-suggestions');
+    container.innerHTML = '';
+    this.hasShownSuggestions = true;
+  }
+
   async handleSend() {
     const input = document.getElementById('chat-input');
     const button = document.getElementById('chat-send');
@@ -366,6 +452,7 @@ class PortfolioChatWidget {
 
     if (!question) return;
 
+    this.hideSuggestions();
     input.value = '';
     button.disabled = true;
 
@@ -396,9 +483,24 @@ class PortfolioChatWidget {
     const messages = document.getElementById('chat-messages');
     const div = document.createElement('div');
     div.className = `chat-message ${role}`;
-    div.textContent = text;
+    // Parse basic markdown: **bold** and *italic*
+    div.innerHTML = this.parseMarkdown(text);
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
+  }
+
+  parseMarkdown(text) {
+    // Escape HTML first to prevent XSS
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Parse markdown
+    return escaped
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // **bold**
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')              // *italic*
+      .replace(/\n/g, '<br>');                            // line breaks
   }
 
   showTyping() {
@@ -435,8 +537,24 @@ class PortfolioChatWidget {
     const input = document.getElementById('chat-input');
     if (header) header.textContent = this.t.title;
     if (input) input.placeholder = this.t.placeholder;
+    // Update suggestions if visible
+    if (!this.hasShownSuggestions) {
+      this.showSuggestions();
+    }
+  }
+
+  // Open chat programmatically (for "Try it" button)
+  openChat() {
+    this.open();
   }
 }
 
 // Expose for global use and Kotlin interop
 window.PortfolioChatWidget = PortfolioChatWidget;
+
+// Function to open chat from Kotlin
+window.openChatWidget = function() {
+  if (window.chatWidget) {
+    window.chatWidget.openChat();
+  }
+};

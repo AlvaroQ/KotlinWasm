@@ -115,6 +115,7 @@ fun SectionAIProjects() {
                         techStack = project.techStack,
                         accentColor = project.accentColor,
                         githubUrl = project.githubUrl,
+                        isLive = project.isLive,
                         useFullWidth = true
                     )
                 }
@@ -135,7 +136,8 @@ fun SectionAIProjects() {
                         features = project.features,
                         techStack = project.techStack,
                         accentColor = project.accentColor,
-                        githubUrl = project.githubUrl
+                        githubUrl = project.githubUrl,
+                        isLive = project.isLive
                     )
                 }
             }
@@ -176,6 +178,7 @@ private fun AIProjectCard(
     techStack: List<String>,
     accentColor: Color,
     githubUrl: String,
+    isLive: Boolean = false,
     useFullWidth: Boolean = false
 ) {
     val strings = Strings.get()
@@ -242,18 +245,50 @@ private fun AIProjectCard(
                 )
             }
 
-            // AI Badge
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(themeAccentColor.copy(alpha = 0.2f))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = "AI",
-                    style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
-                    color = themeAccentColor
+            // Badge: LIVE (animated) or AI
+            if (isLive) {
+                val infiniteTransition = rememberInfiniteTransition()
+                val liveGlow by infiniteTransition.animateFloat(
+                    initialValue = 0.6f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(800, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Reverse
+                    )
                 )
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(CyberpunkThemeColors.neonGreen.copy(alpha = 0.2f))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(CyberpunkThemeColors.neonGreen.copy(alpha = liveGlow))
+                    )
+                    Text(
+                        text = strings.liveBadge,
+                        style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
+                        color = CyberpunkThemeColors.neonGreen
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(themeAccentColor.copy(alpha = 0.2f))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "AI",
+                        style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
+                        color = themeAccentColor
+                    )
+                }
             }
         }
 
@@ -334,31 +369,66 @@ private fun AIProjectCard(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // GitHub link - clickable
-        val linkInteractionSource = remember { MutableInteractionSource() }
-        val isLinkHovered by linkInteractionSource.collectIsHoveredAsState()
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(if (isLinkHovered) themeAccentColor.copy(alpha = 0.2f) else themeAccentColor.copy(alpha = 0.1f))
-                .border(
-                    width = if (isLinkHovered) 2.dp else 1.dp,
-                    color = themeAccentColor.copy(alpha = if (isLinkHovered) 0.6f else 0.3f),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .hoverable(linkInteractionSource)
-                .pointerHoverIcon(PointerIcon.Hand)
-                .clickable { openGitHubUrl(githubUrl) }
-                .padding(12.dp),
-            contentAlignment = Alignment.Center
+        // Buttons row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = strings.viewOnGithub,
-                style = MaterialTheme.typography.caption,
-                color = themeAccentColor
-            )
+            // GitHub link
+            val linkInteractionSource = remember { MutableInteractionSource() }
+            val isLinkHovered by linkInteractionSource.collectIsHoveredAsState()
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isLinkHovered) themeAccentColor.copy(alpha = 0.2f) else themeAccentColor.copy(alpha = 0.1f))
+                    .border(
+                        width = if (isLinkHovered) 2.dp else 1.dp,
+                        color = themeAccentColor.copy(alpha = if (isLinkHovered) 0.6f else 0.3f),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .hoverable(linkInteractionSource)
+                    .pointerHoverIcon(PointerIcon.Hand)
+                    .clickable { openGitHubUrl(githubUrl) }
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = strings.viewOnGithub,
+                    style = MaterialTheme.typography.caption,
+                    color = themeAccentColor
+                )
+            }
+
+            // "Try it" button - only for live projects
+            if (isLive) {
+                val tryInteractionSource = remember { MutableInteractionSource() }
+                val isTryHovered by tryInteractionSource.collectIsHoveredAsState()
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(
+                            if (isTryHovered)
+                                Brush.horizontalGradient(listOf(CyberpunkThemeColors.neonCyan, CyberpunkThemeColors.neonMagenta))
+                            else
+                                Brush.horizontalGradient(listOf(CyberpunkThemeColors.neonCyan.copy(alpha = 0.8f), CyberpunkThemeColors.neonMagenta.copy(alpha = 0.8f)))
+                        )
+                        .hoverable(tryInteractionSource)
+                        .pointerHoverIcon(PointerIcon.Hand)
+                        .clickable { openChatWidget() }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "> ${strings.tryIt}",
+                        style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White
+                    )
+                }
+            }
         }
     }
 }
@@ -434,3 +504,6 @@ private fun StatItem(value: String, label: String, color: Color) {
 private fun openGitHubUrl(url: String) {
     window.open(url, "_blank")
 }
+
+// Open chat widget - JS interop
+private fun openChatWidget(): Unit = js("window.openChatWidget && window.openChatWidget()")

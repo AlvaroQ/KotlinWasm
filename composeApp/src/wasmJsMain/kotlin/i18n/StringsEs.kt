@@ -43,6 +43,8 @@ object StringsEs : AppStrings {
     override val keyFeatures = "CARACTERISTICAS CLAVE"
     override val techStack = "TECNOLOGIAS"
     override val viewOnGithub = "> Ver en GitHub"
+    override val liveBadge = "LIVE"
+    override val tryIt = "Pruebalo"
 
     // Skills
     override val skillsMatrix = "HABILIDADES"

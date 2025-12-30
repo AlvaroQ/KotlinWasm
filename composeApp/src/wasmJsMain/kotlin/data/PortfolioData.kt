@@ -137,7 +137,8 @@ data class AIProject(
     val features: List<i18n.LocalizedString>,
     val techStack: List<String>,
     val accentColor: Color,
-    val githubUrl: String
+    val githubUrl: String,
+    val isLive: Boolean = false  // Shows LIVE badge and "Try it" button
 )
 
 object AIProjectsData {
@@ -159,7 +160,8 @@ object AIProjectsData {
             ),
             techStack = listOf("Cloudflare Workers", "Vectorize", "Llama 3.1", "BGE Embeddings"),
             accentColor = CyberpunkColors.NeonMagenta,
-            githubUrl = "https://github.com/AlvaroQ/portfolio-chatbot"
+            githubUrl = "https://github.com/AlvaroQ/portfolio-chatbot",
+            isLive = true
         ),
         AIProject(
             title = "Translation & Voice AI",

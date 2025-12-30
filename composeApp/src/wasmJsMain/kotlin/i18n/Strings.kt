@@ -44,6 +44,8 @@ interface AppStrings {
     val keyFeatures: String
     val techStack: String
     val viewOnGithub: String
+    val liveBadge: String
+    val tryIt: String
 
     // Skills
     val skillsMatrix: String
