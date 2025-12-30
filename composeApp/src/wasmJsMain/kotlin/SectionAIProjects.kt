@@ -37,6 +37,7 @@ import theme.CyberpunkThemeColors
 import theme.LocalThemeMode
 import theme.ThemeMode
 import i18n.Strings
+import i18n.LocalizedString
 
 @Composable
 fun SectionAIProjects() {
@@ -169,14 +170,15 @@ private fun getThemeAwareAccentColor(color: Color): Color {
 private fun AIProjectCard(
     modifier: Modifier = Modifier,
     title: String,
-    subtitle: String,
-    description: String,
-    features: List<String>,
+    subtitle: LocalizedString,
+    description: LocalizedString,
+    features: List<LocalizedString>,
     techStack: List<String>,
     accentColor: Color,
     githubUrl: String,
     useFullWidth: Boolean = false
 ) {
+    val strings = Strings.get()
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -234,7 +236,7 @@ private fun AIProjectCard(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = subtitle,
+                    text = subtitle.get(),
                     style = MaterialTheme.typography.caption,
                     color = CyberpunkThemeColors.textSecondary
                 )
@@ -259,7 +261,7 @@ private fun AIProjectCard(
 
         // Description
         Text(
-            text = description,
+            text = description.get(),
             style = MaterialTheme.typography.body2,
             color = CyberpunkThemeColors.textPrimary,
             lineHeight = 22.sp
@@ -269,7 +271,7 @@ private fun AIProjectCard(
 
         // Features grid
         Text(
-            text = "KEY FEATURES",
+            text = strings.keyFeatures,
             style = MaterialTheme.typography.caption.copy(letterSpacing = 2.sp),
             color = CyberpunkThemeColors.textSecondary
         )
@@ -313,7 +315,7 @@ private fun AIProjectCard(
 
         // Tech stack
         Text(
-            text = "TECH STACK",
+            text = strings.techStack,
             style = MaterialTheme.typography.caption.copy(letterSpacing = 2.sp),
             color = CyberpunkThemeColors.textSecondary
         )
@@ -353,7 +355,7 @@ private fun AIProjectCard(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "> View on GitHub",
+                text = strings.viewOnGithub,
                 style = MaterialTheme.typography.caption,
                 color = themeAccentColor
             )
@@ -362,7 +364,7 @@ private fun AIProjectCard(
 }
 
 @Composable
-private fun FeatureItem(text: String, color: Color) {
+private fun FeatureItem(text: LocalizedString, color: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 2.dp)
@@ -375,7 +377,7 @@ private fun FeatureItem(text: String, color: Color) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = text,
+            text = text.get(),
             style = MaterialTheme.typography.body2,
             color = CyberpunkThemeColors.textPrimary
         )
@@ -387,7 +389,8 @@ private fun TechChip(text: String, color: Color) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
-            .background(color.copy(alpha = 0.15f))
+            .background(color.copy(alpha = 0.2f))
+            .border(1.dp, color.copy(alpha = 0.4f), RoundedCornerShape(4.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(

@@ -132,39 +132,64 @@ object CareerData {
  */
 data class AIProject(
     val title: String,
-    val subtitle: String,
-    val description: String,
-    val features: List<String>,
+    val subtitle: i18n.LocalizedString,
+    val description: i18n.LocalizedString,
+    val features: List<i18n.LocalizedString>,
     val techStack: List<String>,
     val accentColor: Color,
     val githubUrl: String
 )
 
 object AIProjectsData {
+    private fun L(es: String, en: String) = i18n.LocalizedString(es, en)
+
     val projects = listOf(
         AIProject(
-            title = "Translation & Voice AI",
-            subtitle = "100% Local Processing",
-            description = "Desktop app that converts documents (PDF, Word, TXT) into high-quality speech using local AI models. No cloud, no costs, full privacy.",
+            title = "RAG Chatbot",
+            subtitle = L("Asistente IA", "AI Assistant"),
+            description = L(
+                "Chatbot inteligente que responde preguntas sobre mi trayectoria profesional, habilidades tecnicas y proyectos. Usa arquitectura RAG con embeddings vectoriales para ofrecer respuestas precisas y contextuales a reclutadores y empresas.",
+                "Smart chatbot that answers questions about my career, technical skills and projects. Uses RAG architecture with vector embeddings to provide accurate, contextual responses to recruiters and companies."
+            ),
             features = listOf(
-                "50+ Neural Voices",
-                "200+ Languages",
-                "Offline Processing",
-                "Document Support"
+                L("Arquitectura RAG", "RAG Architecture"),
+                L("Embeddings Vectoriales", "Vector Embeddings"),
+                L("100% Serverless", "100% Serverless"),
+                L("Respuestas Contextuales", "Contextual Answers")
+            ),
+            techStack = listOf("Cloudflare Workers", "Vectorize", "Llama 3.1", "BGE Embeddings"),
+            accentColor = CyberpunkColors.NeonMagenta,
+            githubUrl = "https://github.com/AlvaroQ/portfolio-chatbot"
+        ),
+        AIProject(
+            title = "Translation & Voice AI",
+            subtitle = L("100% Procesamiento Local", "100% Local Processing"),
+            description = L(
+                "App de escritorio que convierte documentos (PDF, Word, TXT) en audio de alta calidad usando modelos IA locales. Sin nube, sin costes, privacidad total.",
+                "Desktop app that converts documents (PDF, Word, TXT) into high-quality speech using local AI models. No cloud, no costs, full privacy."
+            ),
+            features = listOf(
+                L("50+ Voces Neurales", "50+ Neural Voices"),
+                L("200+ Idiomas", "200+ Languages"),
+                L("Procesamiento Offline", "Offline Processing"),
+                L("Soporte Documentos", "Document Support")
             ),
             techStack = listOf("Python", "PyTorch", "ONNX", "Kokoro-82M", "NLLB-200"),
             accentColor = CyberpunkColors.NeonCyan,
             githubUrl = "https://github.com/AlvaroQ/TranslationAndVoiceLocally"
         ),
         AIProject(
-            title = "Chart Analyzer and Stock News",
-            subtitle = "Real-time Market Intelligence",
-            description = "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors.",
+            title = "Chart Analyzer",
+            subtitle = L("Inteligencia de Mercado en Tiempo Real", "Real-time Market Intelligence"),
+            description = L(
+                "Plataforma full-stack que integra agentes IA para analisis financiero. Combina busqueda de noticias con analisis tecnico de graficos para inversores.",
+                "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors."
+            ),
             features = listOf(
-                "Real-time News AI",
-                "Chart Analysis",
-                "Pattern Detection",
-                "Technical Indicators"
+                L("Noticias IA en Tiempo Real", "Real-time News AI"),
+                L("Analisis de Graficos", "Chart Analysis"),
+                L("Deteccion de Patrones", "Pattern Detection"),
+                L("Indicadores Tecnicos", "Technical Indicators")
             ),
             techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
             accentColor = CyberpunkColors.NeonGreen,
@@ -172,13 +197,16 @@ object AIProjectsData {
         ),
         AIProject(
             title = "Lotto Scan",
-            subtitle = "AI-Powered OCR Scanner",
-            description = "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models.",
+            subtitle = L("Escaner OCR con IA", "AI-Powered OCR Scanner"),
+            description = L(
+                "App Kotlin Multiplatform que escanea y gestiona boletos de loteria espanola usando OCR con IA. Procesa boletos offline con modelos locales.",
+                "Kotlin Multiplatform app that scans and manages Spanish lottery tickets using AI-powered OCR. Process tickets offline with local models."
+            ),
             features = listOf(
-                "Multi-Lottery Support",
-                "Offline OCR",
-                "Confidence Scoring",
-                "Local Storage"
+                L("Multi-Loteria", "Multi-Lottery Support"),
+                L("OCR Offline", "Offline OCR"),
+                L("Puntuacion de Confianza", "Confidence Scoring"),
+                L("Almacenamiento Local", "Local Storage")
             ),
             techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
             accentColor = CyberpunkColors.Orchid,
