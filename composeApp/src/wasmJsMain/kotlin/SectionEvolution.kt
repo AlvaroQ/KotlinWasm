@@ -258,14 +258,15 @@ private fun CareerNodeCard(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // Period
+        // Period - show full range on all screen sizes
         Text(
-            text = if (isMobile) node.period.takeLast(4) else node.period, // Just year on mobile
+            text = node.period,
             style = MaterialTheme.typography.caption.copy(
-                letterSpacing = if (isMobile) 1.sp else 2.sp,
-                fontSize = if (isMobile) 8.sp else 12.sp
+                letterSpacing = if (isMobile) 0.5.sp else 2.sp,
+                fontSize = if (isMobile) 9.sp else 12.sp
             ),
-            color = nodeColor
+            color = nodeColor,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(if (isMobile) 6.dp else 12.dp))
@@ -439,3 +440,4 @@ private fun ConnectionLine(colorStartTheme: data.ThemeColor, colorEndTheme: data
             )
     )
 }
+

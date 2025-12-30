@@ -137,11 +137,12 @@ fun SectionPresentation() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(max = 900.dp),
+                .widthIn(max = 900.dp)
+                .height(IntrinsicSize.Max),
             horizontalArrangement = Arrangement.spacedBy(if (isMobile) 12.dp else 24.dp)
         ) {
             StatCard(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 value = "+12",
                 label = "YEARS",
                 sublabel = "50+ APPS",
@@ -149,7 +150,7 @@ fun SectionPresentation() {
                 compact = isMobile
             )
             StatCard(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 value = "4",
                 label = "PLATFORMS",
                 sublabel = "1M+ USERS",
@@ -157,7 +158,7 @@ fun SectionPresentation() {
                 compact = isMobile
             )
             StatCard(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 value = "SDK",
                 label = "B-FY",
                 sublabel = "15+ ENTERPRISE APPS",
