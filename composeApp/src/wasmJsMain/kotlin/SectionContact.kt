@@ -107,6 +107,8 @@ private fun TerminalEmailLine(
     color: Color
 ) {
     val strings = Strings.get()
+    val screenWidth = LocalScreenWidth.current
+    val isMobile = screenWidth < Breakpoints.MOBILE
     val interactionSource = remember { MutableInteractionSource() }
     val copyInteractionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -120,25 +122,8 @@ private fun TerminalEmailLine(
         }
     }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = prefix,
-            style = MaterialTheme.typography.body2,
-            color = CyberpunkThemeColors.textPrimary
-        )
-        Text(
-            text = email,
-            style = MaterialTheme.typography.body2.copy(
-                textDecoration = if (isHovered) TextDecoration.Underline else TextDecoration.None
-            ),
-            color = if (isHovered) color else color.copy(alpha = 0.8f),
-            modifier = Modifier
-                .clickable { openUrl("mailto:$email") }
-                .hoverable(interactionSource)
-                .pointerHoverIcon(PointerIcon.Hand)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        // Copy button
+    @Composable
+    fun CopyButton() {
         Text(
             text = if (copied) "OK" else "Copy",
             style = MaterialTheme.typography.caption,
@@ -168,6 +153,53 @@ private fun TerminalEmailLine(
                     contentDescription = if (copied) strings.a11yEmailCopied else strings.a11yCopyEmail
                 }
         )
+    }
+
+    if (isMobile) {
+        // Mobile: Stack vertically
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row {
+                Text(
+                    text = prefix,
+                    style = MaterialTheme.typography.body2,
+                    color = CyberpunkThemeColors.textPrimary
+                )
+                Text(
+                    text = email,
+                    style = MaterialTheme.typography.body2.copy(
+                        textDecoration = if (isHovered) TextDecoration.Underline else TextDecoration.None
+                    ),
+                    color = if (isHovered) color else color.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .clickable { openUrl("mailto:$email") }
+                        .hoverable(interactionSource)
+                        .pointerHoverIcon(PointerIcon.Hand)
+                )
+            }
+            CopyButton()
+        }
+    } else {
+        // Desktop: Single row
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = prefix,
+                style = MaterialTheme.typography.body2,
+                color = CyberpunkThemeColors.textPrimary
+            )
+            Text(
+                text = email,
+                style = MaterialTheme.typography.body2.copy(
+                    textDecoration = if (isHovered) TextDecoration.Underline else TextDecoration.None
+                ),
+                color = if (isHovered) color else color.copy(alpha = 0.8f),
+                modifier = Modifier
+                    .clickable { openUrl("mailto:$email") }
+                    .hoverable(interactionSource)
+                    .pointerHoverIcon(PointerIcon.Hand)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            CopyButton()
+        }
     }
 }
 
