@@ -143,6 +143,13 @@
                 theme: savedTheme,
                 lang: savedLang
             });
+
+            // Auto-open chat if URL contains #chat
+            if (window.location.hash === '#chat') {
+                setTimeout(function() {
+                    window.openChatWidget();
+                }, 500);
+            }
         });
 
         // Expose functions for Kotlin interop to sync theme/lang
