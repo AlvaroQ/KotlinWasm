@@ -38,23 +38,26 @@ fun LazyImage(
     threshold: Float = 0.9f,  // Load slightly before fully visible
     fadeInDuration: Int = 400
 ) {
-    val scrollPosition = LocalScrollPosition.current
-    val viewportHeight = LocalViewportHeight.current
-
     var imageTop by remember { mutableStateOf(0) }
     var shouldLoad by remember { mutableStateOf(false) }
 
-    // Determine if image is near viewport
-    val isNearViewport = remember(scrollPosition, imageTop, viewportHeight) {
-        val buffer = viewportHeight * threshold
-        imageTop < scrollPosition + viewportHeight + buffer &&
-        imageTop > scrollPosition - buffer
-    }
+    // Only read scroll position if we haven't loaded yet (performance optimization)
+    if (!shouldLoad) {
+        val scrollPosition = LocalScrollPosition.current
+        val viewportHeight = LocalViewportHeight.current
 
-    // Once near viewport, start loading
-    LaunchedEffect(isNearViewport) {
-        if (isNearViewport && !shouldLoad) {
-            shouldLoad = true
+        // Determine if image is near viewport
+        val isNearViewport = remember(scrollPosition, imageTop, viewportHeight) {
+            val buffer = viewportHeight * threshold
+            imageTop < scrollPosition + viewportHeight + buffer &&
+            imageTop > scrollPosition - buffer
+        }
+
+        // Once near viewport, start loading
+        LaunchedEffect(isNearViewport) {
+            if (isNearViewport) {
+                shouldLoad = true
+            }
         }
     }
 

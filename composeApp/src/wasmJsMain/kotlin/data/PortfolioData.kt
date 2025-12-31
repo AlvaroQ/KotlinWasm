@@ -107,7 +107,7 @@ object CareerData {
             company = "B-FY",
             period = "2018 - Present",
             role = "App Development Director",
-            description = "Leading multi-platform development: Android, iOS, Desktop (Win/Mac/Linux) with KMP.",
+            description = "Passwordless IDaaS platform for identity protection against impersonation. Leading SDK development across Android, iOS and Desktop with KMP.",
             skills = listOf("KMP", "iOS", "Compose", "Ktor"),
             themeColor = ThemeColor.NEON_MAGENTA,
             icon = "BF",

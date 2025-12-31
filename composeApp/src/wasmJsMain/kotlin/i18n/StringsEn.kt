@@ -14,7 +14,7 @@ object StringsEn : AppStrings {
     override val jobTitle = "Senior Mobile Developer & AI Specialist"
     override val linkedIn = "LinkedIn"
     override val github = "GitHub"
-    override val bioP1 = "I'm a **Kotlin** specialist with over 12 years of experience building mobile applications for **Android**, **iOS**, **web** and **multiplatform** projects. Currently working as Senior Developer Engineer at **B-FY**, where I lead SDK development for advanced **biometric authentication**."
+    override val bioP1 = "I'm a **Kotlin** specialist with over 12 years of experience building mobile applications for **Android**, **iOS**, **web** and **multiplatform** projects. Currently working as Senior Developer Engineer at **B-FY**, a **passwordless IDaaS** platform that protects businesses and users against **identity impersonation**."
     override val bioP2 = "I develop modern UIs with **Jetpack Compose** and **Compose Multiplatform**, creating fluid user experiences across all platforms. My approach combines **clean code** with **scalable architectures**."
     override val bioP3 = "I focus on building **secure applications** following best security practices. I have experience implementing **biometric solutions**, **encryption**, and secure **authentication protocols**."
     override val bioP4 = "I work with **Git**, **Git Flow**, and **Scrum/Agile** methodologies to deliver high-quality projects. I believe in continuous improvement and staying updated with the latest technologies."

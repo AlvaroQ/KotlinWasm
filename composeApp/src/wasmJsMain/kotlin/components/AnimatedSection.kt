@@ -30,22 +30,25 @@ fun AnimatedSection(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val scrollPosition = LocalScrollPosition.current
-    val viewportHeight = LocalViewportHeight.current
-
     var sectionTop by remember { mutableStateOf(0) }
     var hasAnimated by remember { mutableStateOf(false) }
 
-    // Determine if section is in viewport
-    val isInViewport = remember(scrollPosition, sectionTop, viewportHeight) {
-        val visibleThreshold = viewportHeight * threshold
-        sectionTop < scrollPosition + viewportHeight - visibleThreshold
-    }
+    // Only read scroll position if we haven't animated yet (performance optimization)
+    if (!hasAnimated) {
+        val scrollPosition = LocalScrollPosition.current
+        val viewportHeight = LocalViewportHeight.current
 
-    // Once visible, mark as animated (don't re-animate)
-    LaunchedEffect(isInViewport) {
-        if (isInViewport && !hasAnimated) {
-            hasAnimated = true
+        // Determine if section is in viewport
+        val isInViewport = remember(scrollPosition, sectionTop, viewportHeight) {
+            val visibleThreshold = viewportHeight * threshold
+            sectionTop < scrollPosition + viewportHeight - visibleThreshold
+        }
+
+        // Once visible, mark as animated (don't re-animate)
+        LaunchedEffect(isInViewport) {
+            if (isInViewport) {
+                hasAnimated = true
+            }
         }
     }
 
