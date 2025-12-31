@@ -137,7 +137,8 @@ data class ProjectDetails(
     val architecture: i18n.LocalizedString,
     val screenshots: List<String>,
     val keyHighlights: List<i18n.LocalizedString>,
-    val videoPlaceholder: Boolean = false
+    val videoPlaceholder: Boolean = false,
+    val demoUrl: String? = null
 )
 
 /**
@@ -163,41 +164,61 @@ object AIProjectsData {
     val projects = listOf(
         AIProject(
             title = "Portfolio & Stock",
-            subtitle = L("Plataforma Integral de Gestión de Inversiones", "Comprehensive Investment Management Platform"),
+            subtitle = L("Plataforma de Gestión de Inversiones con Alertas Automatizadas", "Investment Management Platform with Automated Alerts"),
             description = L(
-                "Plataforma full-stack que consolida inversiones de múltiples brokers, genera informes fiscales anuales, analiza fundamentales con IA y proporciona visión global de mercados con ratios de valoración en tiempo real.",
-                "Full-stack platform that consolidates investments from multiple brokers, generates annual tax reports, analyzes fundamentals with AI and provides global market vision with real-time valuation ratios."
+                "Plataforma full-stack que consolida inversiones de múltiples brokers, genera informes fiscales, analiza fundamentales con IA y envía alertas inteligentes diarias y semanales sobre precios objetivo y movimientos significativos del mercado. Arquitectura segura con Cloud Functions como middleware.",
+                "Full-stack platform that consolidates investments from multiple brokers, generates tax reports, analyzes fundamentals with AI and sends intelligent daily and weekly alerts about target prices and significant market movements. Secure architecture with Cloud Functions as middleware."
             ),
             features = listOf(
-                L("Informes Fiscales Anuales", "Annual Tax Reports"),
+                L("Alertas Automatizadas n8n", "Automated n8n Alerts"),
                 L("Análisis Fundamental IA", "AI Fundamental Analysis"),
-                L("Visión Global de Mercados", "Global Market Vision"),
+                L("Arquitectura Segura", "Secure Architecture"),
                 L("Ratios de Valoración", "Valuation Ratios")
             ),
-            techStack = listOf("Next.js 15", "Firebase", "Gemini 2.0", "Perplexity AI", "TypeScript", "TradingView"),
+            techStack = listOf("Next.js 15", "Firebase", "Cloud Functions", "n8n", "Docker", "Gemini 2.0", "Perplexity AI", "TypeScript"),
             accentColor = CyberpunkColors.NeonYellow,
             githubUrl = null,
             isPrivate = true,
             isFeatured = true,
             detailedInfo = ProjectDetails(
                 longDescription = L(
-                    "Portfolio & Stock es mi proyecto más ambicioso: una plataforma integral de gestión de inversiones diseñada para inversores serios que necesitan consolidar posiciones de múltiples brokers, generar informes fiscales detallados y tomar decisiones informadas basadas en datos.\n\nEl sistema genera informes anuales completos con desglose de rentabilidades por período, identificación de mejores y peores valores, y un registro exhaustivo de posiciones abiertas y cerradas durante el ejercicio - esencial para la declaración fiscal.\n\nIncluye un área de visión global que muestra índices mundiales, materias primas y valores categorizados por sector y horizonte temporal, permitiendo identificar tendencias macro antes de invertir.\n\nAl navegar a cualquier acción individual, el usuario accede a una ficha completa con fundamentales de la empresa, gráficos históricos interactivos, ratios de valoración actuales e históricos (PER, PEG, EV/EBITDA, P/B), y fórmulas de valoración automatizadas (DCF, Graham, Lynch) que identifican oportunidades de inversión infravaloradas.\n\nTodo presentado en una interfaz intuitiva y profesional que hace accesible el análisis financiero avanzado.",
-                    "Portfolio & Stock is my most ambitious project: a comprehensive investment management platform designed for serious investors who need to consolidate positions from multiple brokers, generate detailed tax reports and make informed data-driven decisions.\n\nThe system generates complete annual reports with profitability breakdown by period, identification of best and worst performers, and an exhaustive record of positions opened and closed during the fiscal year - essential for tax filing.\n\nIt includes a global vision area showing world indices, commodities and stocks categorized by sector and time horizon, allowing identification of macro trends before investing.\n\nWhen navigating to any individual stock, the user accesses a complete profile with company fundamentals, interactive historical charts, current and historical valuation ratios (P/E, PEG, EV/EBITDA, P/B), and automated valuation formulas (DCF, Graham, Lynch) that identify undervalued investment opportunities.\n\nAll presented in an intuitive and professional interface that makes advanced financial analysis accessible."
+                    "Plataforma integral que consolida inversiones de múltiples brokers, genera informes fiscales y permite tomar decisiones basadas en datos.\n\n" +
+                    "## Dashboard\n" +
+                    "Visión global con índices mundiales, materias primas y sectores. Cada acción incluye ficha con fundamentales, gráficos históricos, ratios (PER, PEG, EV/EBITDA, P/B) y fórmulas automatizadas (DCF, Graham, Lynch) para detectar oportunidades.\n\n" +
+                    "## Sistema de Alertas Inteligentes\n" +
+                    "He desplegado un contenedor Docker con n8n en mi NAS Synology que ejecuta workflows automatizados diarios y semanales con dos frentes de análisis:\n" +
+                    "› Alertas de Precio Objetivo: Compara los precios de alerta del usuario (Firebase) con cotizaciones en tiempo real, notificando cuando un valor alcanza su objetivo de compra o venta.\n" +
+                    "› Análisis de Movimientos: Identifica las mayores subidas y bajadas de tu cartera, busca noticias relevantes con IA y analiza las posibles causas de cada movimiento.\n\n" +
+                    "## Seguridad como Prioridad\n" +
+                    "Toda comunicación con APIs externas pasa por Cloud Functions como middleware seguro: protege claves de API, valida peticiones y garantiza que datos sensibles nunca se exponen al cliente.\n\n" +
+                    "## Análisis y Reporting\n" +
+                    "Informes anuales con rentabilidades, mejores/peores valores y posiciones cerradas para declaración fiscal.",
+                    "Comprehensive platform that consolidates investments from multiple brokers, generates tax reports and enables data-driven decisions.\n\n" +
+                    "## Dashboard\n" +
+                    "Global vision with world indices, commodities and sectors. Each stock includes fundamentals, historical charts, ratios (P/E, PEG, EV/EBITDA, P/B) and automated formulas (DCF, Graham, Lynch) to detect opportunities.\n\n" +
+                    "## Intelligent Alert System\n" +
+                    "I've deployed a Docker container with n8n on my Synology NAS running automated daily and weekly workflows with two analysis fronts:\n" +
+                    "› Target Price Alerts: Compares user alert prices (Firebase) with real-time quotes, notifying when a stock reaches its buy or sell target.\n" +
+                    "› Movement Analysis: Identifies the biggest gainers and losers in your portfolio, searches relevant news with AI and analyzes the causes behind each movement.\n\n" +
+                    "## Security as Priority\n" +
+                    "All external API communication goes through Cloud Functions as secure middleware: protects API keys, validates requests and ensures sensitive data is never exposed to the client.\n\n" +
+                    "## Analysis and Reporting\n" +
+                    "Annual reports with returns, best/worst performers and closed positions for tax filing."
                 ),
                 architecture = L(
-                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions)\nIA Análisis: Gemini 2.0 Flash (fundamentales + gráficos)\nIA Noticias: Perplexity AI (sonar-pro)\nCache: Firebase + SWR para datos en tiempo real\nDespliegue: Vercel + Firebase",
-                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions)\nAI Analysis: Gemini 2.0 Flash (fundamentals + charts)\nAI News: Perplexity AI (sonar-pro)\nCache: Firebase + SWR for real-time data\nDeployment: Vercel + Firebase"
+                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions como middleware)\nAutomatización: Docker + n8n en Synology NAS (alertas diarias/semanales)\nIA Análisis: Gemini 2.0 Flash (fundamentales + gráficos)\nIA Noticias: Perplexity AI (sonar-pro)\nSeguridad: Cloud Functions validan y protegen todas las APIs\nDespliegue: Vercel + Firebase",
+                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions as middleware)\nAutomation: Docker + n8n on Synology NAS (daily/weekly alerts)\nAI Analysis: Gemini 2.0 Flash (fundamentals + charts)\nAI News: Perplexity AI (sonar-pro)\nSecurity: Cloud Functions validate and protect all APIs\nDeployment: Vercel + Firebase"
                 ),
                 screenshots = emptyList(),
                 keyHighlights = listOf(
-                    L("Informes fiscales anuales con rentabilidades, mejores/peores valores y posiciones cerradas", "Annual tax reports with returns, best/worst performers and closed positions"),
-                    L("Visión global: índices mundiales, materias primas y sectores por horizonte temporal", "Global vision: world indices, commodities and sectors by time horizon"),
-                    L("Ficha de acción con fundamentales, gráficos históricos y ratios de valoración", "Stock profile with fundamentals, historical charts and valuation ratios"),
+                    L("Alertas automáticas: precios objetivo y análisis de movimientos vía n8n + Docker", "Automated alerts: target prices and movement analysis via n8n + Docker"),
+                    L("Arquitectura segura: Cloud Functions como middleware protegiendo APIs", "Secure architecture: Cloud Functions as middleware protecting APIs"),
+                    L("Notificaciones inteligentes diarias y semanales con análisis de causas", "Intelligent daily and weekly notifications with cause analysis"),
+                    L("Informes fiscales anuales con rentabilidades y posiciones cerradas", "Annual tax reports with returns and closed positions"),
+                    L("Visión global: índices mundiales, materias primas y sectores", "Global vision: world indices, commodities and sectors"),
                     L("Fórmulas de valoración automatizadas: DCF, Graham Number, Peter Lynch", "Automated valuation formulas: DCF, Graham Number, Peter Lynch"),
-                    L("Detección de oportunidades infravaloradas con scoring de inversión", "Undervalued opportunities detection with investment scoring"),
                     L("Dashboard multi-broker con P&L en tiempo real y multi-divisa", "Multi-broker dashboard with real-time P&L and multi-currency"),
-                    L("Análisis técnico con IA sobre capturas de gráficos", "AI technical analysis on chart screenshots"),
-                    L("Feed de noticias financieras personalizado por cartera", "Portfolio-personalized financial news feed")
+                    L("IA busca noticias relevantes para explicar movimientos significativos", "AI searches relevant news to explain significant movements")
                 ),
                 videoPlaceholder = true
             )
@@ -306,7 +327,8 @@ object AIProjectsData {
                     L("Detecta patrones: head & shoulders, triángulos, canales", "Detects patterns: head & shoulders, triangles, channels"),
                     L("Correlaciona noticias con movimientos de precio", "Correlates news with price movements"),
                     L("100% TypeScript con tipos estrictos", "100% TypeScript with strict types")
-                )
+                ),
+                demoUrl = "https://project-ia-three.vercel.app/"
             )
         ),
         AIProject(

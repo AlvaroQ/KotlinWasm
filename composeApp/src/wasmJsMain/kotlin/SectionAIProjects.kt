@@ -475,7 +475,8 @@ private fun AIProjectCard(
                                     keyHighlights = keyHighlightsTexts,
                                     techStack = techStack,
                                     videoPlaceholder = detailedInfo.videoPlaceholder,
-                                    accentColor = accentColorHex
+                                    accentColor = accentColorHex,
+                                    demoUrl = detailedInfo.demoUrl
                                 )
                             )
                         }
@@ -532,11 +533,13 @@ private fun buildProjectJson(
     keyHighlights: List<String>,
     techStack: List<String>,
     videoPlaceholder: Boolean,
-    accentColor: String
+    accentColor: String,
+    demoUrl: String? = null
 ): String {
     val highlightsJson = keyHighlights.joinToString(",") { "\"${escapeJson(it)}\"" }
     val techStackJson = techStack.joinToString(",") { "\"${escapeJson(it)}\"" }
     val screenshotsJson = screenshots.joinToString(",") { "\"${escapeJson(it)}\"" }
+    val demoUrlJson = if (demoUrl != null) "\"${escapeJson(demoUrl)}\"" else "null"
     return """{
         "title": "${escapeJson(title)}",
         "subtitle": "${escapeJson(subtitle)}",
@@ -546,7 +549,8 @@ private fun buildProjectJson(
         "keyHighlights": [$highlightsJson],
         "techStack": [$techStackJson],
         "videoPlaceholder": $videoPlaceholder,
-        "accentColor": "$accentColor"
+        "accentColor": "$accentColor",
+        "demoUrl": $demoUrlJson
     }"""
 }
 

@@ -22,7 +22,8 @@ class ProjectDetailModal {
         screenshotPlaceholder: 'Proximamente',
         videoDemo: 'Video Demo',
         videoPlaceholder: 'Grabacion en progreso...',
-        close: 'Cerrar'
+        close: 'Cerrar',
+        openDemo: 'Abrir Demo'
       },
       en: {
         featured: 'FEATURED',
@@ -34,7 +35,8 @@ class ProjectDetailModal {
         screenshotPlaceholder: 'Coming soon',
         videoDemo: 'Video Demo',
         videoPlaceholder: 'Recording in progress...',
-        close: 'Close'
+        close: 'Close',
+        openDemo: 'Open Demo'
       }
     };
 
@@ -181,6 +183,13 @@ class ProjectDetailModal {
         color: var(--accent-color);
       }
 
+      .modal-subtitle-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
       .modal-subtitle {
         font-size: 14px;
         margin: 0;
@@ -192,6 +201,25 @@ class ProjectDetailModal {
 
       #project-modal-overlay.light .modal-subtitle {
         color: #666666;
+      }
+
+      .modal-demo-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        background: var(--accent-color);
+        color: #000;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+
+      .modal-demo-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
       }
 
       .modal-close {
@@ -246,6 +274,29 @@ class ProjectDetailModal {
         font-size: 14px;
         line-height: 1.7;
         margin: 0;
+        white-space: pre-line;
+      }
+
+      .modal-section-heading {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 8px;
+        color: var(--accent-color);
+      }
+
+      .modal-link {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s;
+      }
+
+      .modal-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
       }
 
       #project-modal-overlay.dark .modal-description {
@@ -381,6 +432,64 @@ class ProjectDetailModal {
         color: #666666;
       }
 
+      /* Lightbox for expanded screenshots */
+      #screenshot-lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10003;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        cursor: zoom-out;
+        animation: lightboxFadeIn 0.2s ease;
+      }
+
+      #screenshot-lightbox.open {
+        display: flex;
+      }
+
+      @keyframes lightboxFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      #screenshot-lightbox img {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+        animation: lightboxZoomIn 0.2s ease;
+      }
+
+      @keyframes lightboxZoomIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      #screenshot-lightbox .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 32px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+
+      #screenshot-lightbox .lightbox-close:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+
       /* Responsive */
       @media (max-width: 600px) {
         #project-modal-content {
@@ -474,14 +583,17 @@ class ProjectDetailModal {
               ${data.isFeatured ? `<span class="badge-featured">${this.t.featured}</span>` : ''}
             </div>
             <h2 class="modal-title">${this.escapeHtml(data.title)}</h2>
-            <p class="modal-subtitle">${this.escapeHtml(data.subtitle)}</p>
+            <div class="modal-subtitle-row">
+              <p class="modal-subtitle">${this.escapeHtml(data.subtitle)}</p>
+              ${data.demoUrl ? `<a href="${data.demoUrl}" target="_blank" rel="noopener noreferrer" class="modal-demo-btn">▶ ${this.t.openDemo}</a>` : ''}
+            </div>
           </div>
           <button class="modal-close" id="project-modal-close" aria-label="${this.t.close}">&times;</button>
         </div>
         <div class="modal-body">
           <!-- Description -->
           <div class="modal-section">
-            <p class="modal-description">${this.escapeHtml(data.longDescription)}</p>
+            <p class="modal-description">${this.formatDescription(data.longDescription)}</p>
           </div>
 
           <!-- Screenshots -->
@@ -541,7 +653,7 @@ class ProjectDetailModal {
   renderScreenshots(screenshots) {
     if (!screenshots || screenshots.length === 0) return '';
     return screenshots.map(src =>
-      `<img src="${src}" alt="Screenshot" class="modal-screenshot-img" loading="lazy" />`
+      `<img src="${src}" alt="Screenshot" class="modal-screenshot-img" loading="lazy" onclick="window.projectModal.openLightbox('${src}')" />`
     ).join('');
   }
 
@@ -559,8 +671,14 @@ class ProjectDetailModal {
 
     // Close on Escape key
     this.escapeHandler = (e) => {
-      if (e.key === 'Escape' && this.isOpen) {
-        this.close();
+      if (e.key === 'Escape') {
+        // First close lightbox if open, then modal
+        const lightbox = document.getElementById('screenshot-lightbox');
+        if (lightbox) {
+          this.closeLightbox();
+        } else if (this.isOpen) {
+          this.close();
+        }
       }
     };
     document.addEventListener('keydown', this.escapeHandler);
@@ -574,6 +692,46 @@ class ProjectDetailModal {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  formatDescription(text) {
+    if (!text) return '';
+    // First escape HTML
+    let formatted = this.escapeHtml(text);
+    // Convert ## Title to styled headings
+    formatted = formatted.replace(/^## (.+)$/gm, '<span class="modal-section-heading">$1</span>');
+    // Convert [text](url) to clickable links
+    formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="modal-link">$1</a>');
+    return formatted;
+  }
+
+  openLightbox(src) {
+    // Remove existing lightbox if any
+    const existing = document.getElementById('screenshot-lightbox');
+    if (existing) existing.remove();
+
+    const lightbox = document.createElement('div');
+    lightbox.id = 'screenshot-lightbox';
+    lightbox.className = 'open';
+    lightbox.innerHTML = `
+      <button class="lightbox-close" aria-label="Close">&times;</button>
+      <img src="${src}" alt="Screenshot expanded" />
+    `;
+
+    document.body.appendChild(lightbox);
+
+    // Close on click anywhere
+    lightbox.addEventListener('click', () => this.closeLightbox());
+
+    // Prevent closing when clicking on image
+    lightbox.querySelector('img').addEventListener('click', (e) => e.stopPropagation());
+  }
+
+  closeLightbox() {
+    const lightbox = document.getElementById('screenshot-lightbox');
+    if (lightbox) {
+      lightbox.remove();
+    }
   }
 
   setTheme(theme) {
