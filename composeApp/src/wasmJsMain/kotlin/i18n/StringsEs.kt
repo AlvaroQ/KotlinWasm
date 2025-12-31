@@ -45,6 +45,9 @@ object StringsEs : AppStrings {
     override val viewOnGithub = "> Ver en GitHub"
     override val liveBadge = "LIVE"
     override val tryIt = "Pruebalo"
+    override val privateRepository = "Repositorio Privado"
+    override val featured = "DESTACADO"
+    override val viewDetails = "Ver Detalles"
 
     // Skills
     override val skillsMatrix = "HABILIDADES"

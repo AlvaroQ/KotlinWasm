@@ -20,7 +20,8 @@ enum class ThemeColor {
     NEON_MAGENTA,
     NEON_PURPLE,
     SANTANDER_BLUE,
-    ORCHID
+    ORCHID,
+    NEON_YELLOW
 }
 
 /**
@@ -34,6 +35,7 @@ fun ThemeColor.resolve(): Color = when (this) {
     ThemeColor.NEON_PURPLE -> CyberpunkThemeColors.neonPurple
     ThemeColor.SANTANDER_BLUE -> CyberpunkThemeColors.santanderBlue
     ThemeColor.ORCHID -> CyberpunkThemeColors.orchid
+    ThemeColor.NEON_YELLOW -> CyberpunkThemeColors.neonYellow
 }
 
 /**
@@ -128,6 +130,17 @@ object CareerData {
 }
 
 /**
+ * Project details for featured projects with expanded modal
+ */
+data class ProjectDetails(
+    val longDescription: i18n.LocalizedString,
+    val architecture: i18n.LocalizedString,
+    val screenshots: List<String>,
+    val keyHighlights: List<i18n.LocalizedString>,
+    val videoPlaceholder: Boolean = false
+)
+
+/**
  * AI Projects data
  */
 data class AIProject(
@@ -137,14 +150,58 @@ data class AIProject(
     val features: List<i18n.LocalizedString>,
     val techStack: List<String>,
     val accentColor: Color,
-    val githubUrl: String,
-    val isLive: Boolean = false  // Shows LIVE badge and "Try it" button
+    val githubUrl: String? = null,
+    val isLive: Boolean = false,
+    val isPrivate: Boolean = false,
+    val isFeatured: Boolean = false,
+    val detailedInfo: ProjectDetails? = null
 )
 
 object AIProjectsData {
     private fun L(es: String, en: String) = i18n.LocalizedString(es, en)
 
     val projects = listOf(
+        AIProject(
+            title = "Portfolio & Stock",
+            subtitle = L("Plataforma Integral de Gestion de Inversiones", "Comprehensive Investment Management Platform"),
+            description = L(
+                "Plataforma full-stack que consolida inversiones de multiples brokers, genera informes fiscales anuales, analiza fundamentales con IA y proporciona vision global de mercados con ratios de valoracion en tiempo real.",
+                "Full-stack platform that consolidates investments from multiple brokers, generates annual tax reports, analyzes fundamentals with AI and provides global market vision with real-time valuation ratios."
+            ),
+            features = listOf(
+                L("Informes Fiscales Anuales", "Annual Tax Reports"),
+                L("Analisis Fundamental IA", "AI Fundamental Analysis"),
+                L("Vision Global de Mercados", "Global Market Vision"),
+                L("Ratios de Valoracion", "Valuation Ratios")
+            ),
+            techStack = listOf("Next.js 15", "Firebase", "Gemini 2.0", "Perplexity AI", "TypeScript", "TradingView"),
+            accentColor = CyberpunkColors.NeonYellow,
+            githubUrl = null,
+            isPrivate = true,
+            isFeatured = true,
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Portfolio & Stock es mi proyecto mas ambicioso: una plataforma integral de gestion de inversiones disenada para inversores serios que necesitan consolidar posiciones de multiples brokers, generar informes fiscales detallados y tomar decisiones informadas basadas en datos.\n\nEl sistema genera informes anuales completos con desglose de rentabilidades por periodo, identificacion de mejores y peores valores, y un registro exhaustivo de posiciones abiertas y cerradas durante el ejercicio - esencial para la declaracion fiscal.\n\nIncluye un area de vision global que muestra indices mundiales, materias primas y valores categorizados por sector y horizonte temporal, permitiendo identificar tendencias macro antes de invertir.\n\nAl navegar a cualquier accion individual, el usuario accede a una ficha completa con fundamentales de la empresa, graficos historicos interactivos, ratios de valoracion actuales e historicos (PER, PEG, EV/EBITDA, P/B), y formulas de valoracion automatizadas (DCF, Graham, Lynch) que identifican oportunidades de inversion infravaloradas.\n\nTodo presentado en una interfaz intuitiva y profesional que hace accesible el analisis financiero avanzado.",
+                    "Portfolio & Stock is my most ambitious project: a comprehensive investment management platform designed for serious investors who need to consolidate positions from multiple brokers, generate detailed tax reports and make informed data-driven decisions.\n\nThe system generates complete annual reports with profitability breakdown by period, identification of best and worst performers, and an exhaustive record of positions opened and closed during the fiscal year - essential for tax filing.\n\nIt includes a global vision area showing world indices, commodities and stocks categorized by sector and time horizon, allowing identification of macro trends before investing.\n\nWhen navigating to any individual stock, the user accesses a complete profile with company fundamentals, interactive historical charts, current and historical valuation ratios (P/E, PEG, EV/EBITDA, P/B), and automated valuation formulas (DCF, Graham, Lynch) that identify undervalued investment opportunities.\n\nAll presented in an intuitive and professional interface that makes advanced financial analysis accessible."
+                ),
+                architecture = L(
+                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions)\nIA Analisis: Gemini 2.0 Flash (fundamentales + graficos)\nIA Noticias: Perplexity AI (sonar-pro)\nCache: Firebase + SWR para datos en tiempo real\nDespliegue: Vercel + Firebase",
+                    "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions)\nAI Analysis: Gemini 2.0 Flash (fundamentals + charts)\nAI News: Perplexity AI (sonar-pro)\nCache: Firebase + SWR for real-time data\nDeployment: Vercel + Firebase"
+                ),
+                screenshots = emptyList(),
+                keyHighlights = listOf(
+                    L("Informes fiscales anuales con rentabilidades, mejores/peores valores y posiciones cerradas", "Annual tax reports with returns, best/worst performers and closed positions"),
+                    L("Vision global: indices mundiales, materias primas y sectores por horizonte temporal", "Global vision: world indices, commodities and sectors by time horizon"),
+                    L("Ficha de accion con fundamentales, graficos historicos y ratios de valoracion", "Stock profile with fundamentals, historical charts and valuation ratios"),
+                    L("Formulas de valoracion automatizadas: DCF, Graham Number, Peter Lynch", "Automated valuation formulas: DCF, Graham Number, Peter Lynch"),
+                    L("Deteccion de oportunidades infravaloradas con scoring de inversion", "Undervalued opportunities detection with investment scoring"),
+                    L("Dashboard multi-broker con P&L en tiempo real y multi-divisa", "Multi-broker dashboard with real-time P&L and multi-currency"),
+                    L("Analisis tecnico con IA sobre capturas de graficos", "AI technical analysis on chart screenshots"),
+                    L("Feed de noticias financieras personalizado por cartera", "Portfolio-personalized financial news feed")
+                ),
+                videoPlaceholder = true
+            )
+        ),
         AIProject(
             title = "RAG Chatbot",
             subtitle = L("Asistente IA", "AI Assistant"),
@@ -161,7 +218,26 @@ object AIProjectsData {
             techStack = listOf("Cloudflare Workers", "Vectorize", "Llama 3.1", "BGE Embeddings"),
             accentColor = CyberpunkColors.NeonMagenta,
             githubUrl = "https://github.com/AlvaroQ/portfolio-chatbot",
-            isLive = true
+            isLive = true,
+            isFeatured = true,
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Este chatbot representa mi vision de como la IA puede transformar la experiencia de reclutamiento. En lugar de que los recruiters lean paginas de CV, pueden simplemente preguntar lo que necesitan saber. El sistema usa RAG (Retrieval-Augmented Generation) para buscar en mi base de conocimiento vectorizada y generar respuestas precisas y contextuales.",
+                    "This chatbot represents my vision of how AI can transform the recruitment experience. Instead of recruiters reading pages of CVs, they can simply ask what they need to know. The system uses RAG (Retrieval-Augmented Generation) to search my vectorized knowledge base and generate precise, contextual answers."
+                ),
+                architecture = L(
+                    "Frontend: Widget JS embebido en portfolio\nBackend: Cloudflare Workers (Edge Computing)\nVector DB: Cloudflare Vectorize\nLLM: Llama 3.1 via Workers AI\nEmbeddings: BGE-base-en-v1.5\nDatos: Markdown con CV, proyectos y skills",
+                    "Frontend: JS widget embedded in portfolio\nBackend: Cloudflare Workers (Edge Computing)\nVector DB: Cloudflare Vectorize\nLLM: Llama 3.1 via Workers AI\nEmbeddings: BGE-base-en-v1.5\nData: Markdown with CV, projects and skills"
+                ),
+                screenshots = listOf("images/projects/rag-chatbot.png"),
+                keyHighlights = listOf(
+                    L("Latencia <500ms gracias a edge computing", "Latency <500ms thanks to edge computing"),
+                    L("Coste $0 - 100% en free tier de Cloudflare", "Cost $0 - 100% on Cloudflare free tier"),
+                    L("Embeddings vectoriales para busqueda semantica", "Vector embeddings for semantic search"),
+                    L("Respuestas en espanol e ingles", "Responses in Spanish and English"),
+                    L("Integrado directamente en este portfolio", "Integrated directly into this portfolio")
+                )
+            )
         ),
         AIProject(
             title = "Translation & Voice AI",
@@ -178,7 +254,25 @@ object AIProjectsData {
             ),
             techStack = listOf("Python", "PyTorch", "ONNX", "Kokoro-82M", "NLLB-200"),
             accentColor = CyberpunkColors.NeonCyan,
-            githubUrl = "https://github.com/AlvaroQ/TranslationAndVoiceLocally"
+            githubUrl = "https://github.com/AlvaroQ/TranslationAndVoiceLocally",
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Desarrolle esta herramienta para resolver un problema real: convertir documentacion tecnica y libros a audio para escucharlos mientras conduzco o hago ejercicio. A diferencia de servicios cloud como ElevenLabs o Google TTS, todo el procesamiento ocurre localmente, garantizando privacidad total y sin costes recurrentes. El proyecto demuestra mi capacidad para integrar modelos de IA de ultima generacion en aplicaciones de escritorio funcionales.",
+                    "I developed this tool to solve a real problem: converting technical documentation and books to audio to listen while driving or exercising. Unlike cloud services like ElevenLabs or Google TTS, all processing happens locally, guaranteeing total privacy and no recurring costs. The project demonstrates my ability to integrate cutting-edge AI models into functional desktop applications."
+                ),
+                architecture = L(
+                    "UI: Python + Tkinter (cross-platform)\nTTS Engine: Kokoro-82M (neural voices)\nTranslation: NLLB-200 (Meta AI)\nOptimizacion: ONNX Runtime para inferencia rapida\nFormatos: PDF, DOCX, TXT, EPUB",
+                    "UI: Python + Tkinter (cross-platform)\nTTS Engine: Kokoro-82M (neural voices)\nTranslation: NLLB-200 (Meta AI)\nOptimization: ONNX Runtime for fast inference\nFormats: PDF, DOCX, TXT, EPUB"
+                ),
+                screenshots = listOf("images/projects/translation-and-voice-locally.jpg"),
+                keyHighlights = listOf(
+                    L("Voces neurales indistinguibles de humanos", "Neural voices indistinguishable from humans"),
+                    L("Traduce entre 200+ idiomas antes de sintetizar", "Translates between 200+ languages before synthesis"),
+                    L("Funciona 100% offline - sin internet requerido", "Works 100% offline - no internet required"),
+                    L("Optimizado con ONNX para GPUs consumer", "Optimized with ONNX for consumer GPUs"),
+                    L("Exporta a MP3, WAV, OGG con metadatos", "Exports to MP3, WAV, OGG with metadata")
+                )
+            )
         ),
         AIProject(
             title = "Chart Analyzer",
@@ -195,7 +289,25 @@ object AIProjectsData {
             ),
             techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
             accentColor = CyberpunkColors.NeonGreen,
-            githubUrl = "https://github.com/AlvaroQ/chart-analyzer-and-stock-news"
+            githubUrl = "https://github.com/AlvaroQ/chart-analyzer-and-stock-news",
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Como inversor activo, necesitaba una herramienta que combinara analisis tecnico con contexto de noticias en tiempo real. Este proyecto orquesta dos agentes IA: uno busca y resume noticias financieras relevantes usando Perplexity AI, mientras que otro analiza capturas de graficos con Gemini 2.0 para identificar patrones tecnicos, niveles de soporte/resistencia y senales de trading.",
+                    "As an active investor, I needed a tool that combined technical analysis with real-time news context. This project orchestrates two AI agents: one searches and summarizes relevant financial news using Perplexity AI, while another analyzes chart screenshots with Gemini 2.0 to identify technical patterns, support/resistance levels, and trading signals."
+                ),
+                architecture = L(
+                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrquestacion: API Routes con streaming\nDespliegue: Vercel Edge Functions",
+                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrchestration: API Routes with streaming\nDeployment: Vercel Edge Functions"
+                ),
+                screenshots = listOf("images/projects/chart-analyzer-and-stock-news.png"),
+                keyHighlights = listOf(
+                    L("Analisis multimodal: texto (noticias) + vision (graficos)", "Multimodal analysis: text (news) + vision (charts)"),
+                    L("Streaming de respuestas para UX fluida", "Response streaming for fluid UX"),
+                    L("Detecta patrones: head & shoulders, triangulos, canales", "Detects patterns: head & shoulders, triangles, channels"),
+                    L("Correlaciona noticias con movimientos de precio", "Correlates news with price movements"),
+                    L("100% TypeScript con tipos estrictos", "100% TypeScript with strict types")
+                )
+            )
         ),
         AIProject(
             title = "Lotto Scan",
@@ -212,7 +324,28 @@ object AIProjectsData {
             ),
             techStack = listOf("Kotlin", "Compose MP", "PaddleOCR", "ONNX", "SQLDelight"),
             accentColor = CyberpunkColors.Orchid,
-            githubUrl = "https://github.com/AlvaroQ/lotto-scan"
+            githubUrl = "https://github.com/AlvaroQ/lotto-scan",
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Este proyecto combina mi experiencia en Kotlin Multiplatform con IA on-device. La app escanea boletos de loteria espanola (Primitiva, Bonoloto, Euromillones, El Gordo) usando la camara del dispositivo y extrae los numeros automaticamente con OCR. Todo el procesamiento ocurre localmente sin enviar imagenes a ningun servidor, garantizando privacidad y funcionamiento offline.",
+                    "This project combines my expertise in Kotlin Multiplatform with on-device AI. The app scans Spanish lottery tickets (Primitiva, Bonoloto, Euromillions, El Gordo) using the device camera and automatically extracts numbers with OCR. All processing happens locally without sending images to any server, ensuring privacy and offline functionality."
+                ),
+                architecture = L(
+                    "UI: Compose Multiplatform (Android + Desktop)\nOCR: PaddleOCR Lite optimizado para mobile\nInferencia: ONNX Runtime para cross-platform\nDB: SQLDelight (type-safe SQL)\nDI: Koin Multiplatform\nAsync: Kotlin Coroutines + Flow",
+                    "UI: Compose Multiplatform (Android + Desktop)\nOCR: PaddleOCR Lite optimized for mobile\nInference: ONNX Runtime for cross-platform\nDB: SQLDelight (type-safe SQL)\nDI: Koin Multiplatform\nAsync: Kotlin Coroutines + Flow"
+                ),
+                screenshots = listOf(
+                    "images/projects/lotto-scan-camera.jpg",
+                    "images/projects/lotto-scan-preview.jpg"
+                ),
+                keyHighlights = listOf(
+                    L("KMP real: mismo codigo en Android y Desktop", "Real KMP: same code on Android and Desktop"),
+                    L("OCR on-device con PaddleOCR optimizado", "On-device OCR with optimized PaddleOCR"),
+                    L("Puntuacion de confianza por cada numero detectado", "Confidence score for each detected number"),
+                    L("Historial de boletos con SQLDelight", "Ticket history with SQLDelight"),
+                    L("Comprobacion automatica de premios", "Automatic prize checking")
+                )
+            )
         )
     )
 }

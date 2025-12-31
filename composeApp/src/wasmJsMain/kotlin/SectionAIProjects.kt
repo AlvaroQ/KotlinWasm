@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import components.SectionTitle
 import data.AIProjectsData
 import data.Breakpoints
+import data.ProjectDetails
 import kotlinx.browser.window
 import theme.CyberpunkColors
 import theme.CyberpunkColorsLight
@@ -116,6 +117,9 @@ fun SectionAIProjects() {
                         accentColor = project.accentColor,
                         githubUrl = project.githubUrl,
                         isLive = project.isLive,
+                        isPrivate = project.isPrivate,
+                        isFeatured = project.isFeatured,
+                        detailedInfo = project.detailedInfo,
                         useFullWidth = true
                     )
                 }
@@ -137,7 +141,10 @@ fun SectionAIProjects() {
                         techStack = project.techStack,
                         accentColor = project.accentColor,
                         githubUrl = project.githubUrl,
-                        isLive = project.isLive
+                        isLive = project.isLive,
+                        isPrivate = project.isPrivate,
+                        isFeatured = project.isFeatured,
+                        detailedInfo = project.detailedInfo
                     )
                 }
             }
@@ -177,8 +184,11 @@ private fun AIProjectCard(
     features: List<LocalizedString>,
     techStack: List<String>,
     accentColor: Color,
-    githubUrl: String,
+    githubUrl: String? = null,
     isLive: Boolean = false,
+    isPrivate: Boolean = false,
+    isFeatured: Boolean = false,
+    detailedInfo: ProjectDetails? = null,
     useFullWidth: Boolean = false
 ) {
     val strings = Strings.get()
@@ -232,6 +242,33 @@ private fun AIProjectCard(
             verticalAlignment = Alignment.Top
         ) {
             Column {
+                // Featured badge
+                if (isFeatured) {
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        themeAccentColor.copy(alpha = 0.2f),
+                                        themeAccentColor.copy(alpha = 0.1f)
+                                    )
+                                )
+                            )
+                            .border(1.dp, themeAccentColor.copy(alpha = 0.4f), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = strings.featured,
+                            style = MaterialTheme.typography.caption.copy(
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            ),
+                            color = themeAccentColor
+                        )
+                    }
+                }
                 Text(
                     text = title,
                     style = MaterialTheme.typography.h5,
@@ -374,31 +411,83 @@ private fun AIProjectCard(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // GitHub link
-            val linkInteractionSource = remember { MutableInteractionSource() }
-            val isLinkHovered by linkInteractionSource.collectIsHoveredAsState()
+            // GitHub link OR Private badge
+            if (githubUrl != null) {
+                val linkInteractionSource = remember { MutableInteractionSource() }
+                val isLinkHovered by linkInteractionSource.collectIsHoveredAsState()
 
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (isLinkHovered) themeAccentColor.copy(alpha = 0.2f) else themeAccentColor.copy(alpha = 0.1f))
-                    .border(
-                        width = if (isLinkHovered) 2.dp else 1.dp,
-                        color = themeAccentColor.copy(alpha = if (isLinkHovered) 0.6f else 0.3f),
-                        shape = RoundedCornerShape(8.dp)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isLinkHovered) themeAccentColor.copy(alpha = 0.2f) else themeAccentColor.copy(alpha = 0.1f))
+                        .border(
+                            width = if (isLinkHovered) 2.dp else 1.dp,
+                            color = themeAccentColor.copy(alpha = if (isLinkHovered) 0.6f else 0.3f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .hoverable(linkInteractionSource)
+                        .pointerHoverIcon(PointerIcon.Hand)
+                        .clickable { openGitHubUrl(githubUrl) }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = strings.viewOnGithub,
+                        style = MaterialTheme.typography.caption,
+                        color = themeAccentColor
                     )
-                    .hoverable(linkInteractionSource)
-                    .pointerHoverIcon(PointerIcon.Hand)
-                    .clickable { openGitHubUrl(githubUrl) }
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = strings.viewOnGithub,
-                    style = MaterialTheme.typography.caption,
-                    color = themeAccentColor
-                )
+                }
+            }
+
+            // "View Details" button - for all projects with detailed info
+            if (detailedInfo != null) {
+                val detailsInteractionSource = remember { MutableInteractionSource() }
+                val isDetailsHovered by detailsInteractionSource.collectIsHoveredAsState()
+
+                // Pre-compute composable values outside of clickable lambda
+                val subtitleText = subtitle.get()
+                val longDescriptionText = detailedInfo.longDescription.get()
+                val architectureText = detailedInfo.architecture.get()
+                val keyHighlightsTexts = detailedInfo.keyHighlights.map { it.get() }
+                val accentColorHex = colorToHex(themeAccentColor)
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(
+                            if (isDetailsHovered)
+                                Brush.horizontalGradient(listOf(themeAccentColor, themeAccentColor.copy(alpha = 0.8f)))
+                            else
+                                Brush.horizontalGradient(listOf(themeAccentColor.copy(alpha = 0.8f), themeAccentColor.copy(alpha = 0.6f)))
+                        )
+                        .hoverable(detailsInteractionSource)
+                        .pointerHoverIcon(PointerIcon.Hand)
+                        .clickable {
+                            openProjectModal(
+                                buildProjectJson(
+                                    title = title,
+                                    subtitle = subtitleText,
+                                    longDescription = longDescriptionText,
+                                    architecture = architectureText,
+                                    screenshots = detailedInfo.screenshots,
+                                    keyHighlights = keyHighlightsTexts,
+                                    techStack = techStack,
+                                    videoPlaceholder = detailedInfo.videoPlaceholder,
+                                    accentColor = accentColorHex
+                                )
+                            )
+                        }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "> ${strings.viewDetails}",
+                        style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White
+                    )
+                }
             }
 
             // "Try it" button - only for live projects
@@ -432,6 +521,54 @@ private fun AIProjectCard(
         }
     }
 }
+
+// Build JSON for project modal
+private fun buildProjectJson(
+    title: String,
+    subtitle: String,
+    longDescription: String,
+    architecture: String,
+    screenshots: List<String>,
+    keyHighlights: List<String>,
+    techStack: List<String>,
+    videoPlaceholder: Boolean,
+    accentColor: String
+): String {
+    val highlightsJson = keyHighlights.joinToString(",") { "\"${escapeJson(it)}\"" }
+    val techStackJson = techStack.joinToString(",") { "\"${escapeJson(it)}\"" }
+    val screenshotsJson = screenshots.joinToString(",") { "\"${escapeJson(it)}\"" }
+    return """{
+        "title": "${escapeJson(title)}",
+        "subtitle": "${escapeJson(subtitle)}",
+        "longDescription": "${escapeJson(longDescription)}",
+        "architecture": "${escapeJson(architecture)}",
+        "screenshots": [$screenshotsJson],
+        "keyHighlights": [$highlightsJson],
+        "techStack": [$techStackJson],
+        "videoPlaceholder": $videoPlaceholder,
+        "accentColor": "$accentColor"
+    }"""
+}
+
+private fun escapeJson(text: String): String {
+    return text
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+}
+
+// Convert Color to hex string
+private fun colorToHex(color: Color): String {
+    val r = (color.red * 255).toInt()
+    val g = (color.green * 255).toInt()
+    val b = (color.blue * 255).toInt()
+    return "#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}"
+}
+
+// Open project modal - JS interop
+private fun openProjectModal(json: String): Unit = js("window.openProjectModal && window.openProjectModal(json)")
 
 @Composable
 private fun FeatureItem(text: LocalizedString, color: Color) {

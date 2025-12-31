@@ -88,16 +88,6 @@ fun SectionContact() {
             TerminalLine("$ echo Ready to build something amazing?")
         }
 
-        Spacer(modifier = Modifier.height(if (isMobile) 24.dp else 40.dp))
-
-        Text(
-            text = strings.availableFor,
-            style = if (isMobile) MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
-                    else MaterialTheme.typography.h6,
-            color = CyberpunkThemeColors.neonCyan,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
     }
 }
 

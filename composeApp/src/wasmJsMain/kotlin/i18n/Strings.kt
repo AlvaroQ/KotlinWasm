@@ -46,6 +46,9 @@ interface AppStrings {
     val viewOnGithub: String
     val liveBadge: String
     val tryIt: String
+    val privateRepository: String
+    val featured: String
+    val viewDetails: String
 
     // Skills
     val skillsMatrix: String

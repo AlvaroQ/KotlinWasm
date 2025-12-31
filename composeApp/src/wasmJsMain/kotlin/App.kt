@@ -313,17 +313,19 @@ private fun ContactBanner(isMobile: Boolean) {
     }
 }
 
-// Sync theme with HTML banner and chat widget
+// Sync theme with HTML banner, chat widget and project modal
 private fun syncBannerTheme(themeMode: ThemeMode) {
     val theme = if (themeMode == ThemeMode.DARK) "dark" else "light"
     setDocumentTheme(theme)
     updateChatWidgetTheme(theme)
+    updateProjectModalTheme(theme)
 }
 
-// Sync language with HTML banner and chat widget
+// Sync language with HTML banner, chat widget and project modal
 private fun syncBannerLanguage(language: Language) {
     setDocumentLanguage(language.code)
     updateChatWidgetLang(language.code)
+    updateProjectModalLang(language.code)
 }
 
 // Top-level JS interop functions for WASM compatibility
@@ -331,6 +333,8 @@ private fun setDocumentTheme(theme: String): Unit = js("document.documentElement
 private fun setDocumentLanguage(lang: String): Unit = js("window.setPortfolioLanguage && window.setPortfolioLanguage(lang)")
 private fun updateChatWidgetTheme(theme: String): Unit = js("window.updateChatWidgetTheme && window.updateChatWidgetTheme(theme)")
 private fun updateChatWidgetLang(lang: String): Unit = js("window.updateChatWidgetLang && window.updateChatWidgetLang(lang)")
+private fun updateProjectModalTheme(theme: String): Unit = js("window.updateProjectModalTheme && window.updateProjectModalTheme(theme)")
+private fun updateProjectModalLang(lang: String): Unit = js("window.updateProjectModalLang && window.updateProjectModalLang(lang)")
 
 // Obtener el ancho de ventana del navegador
 private fun getWindowWidth(): Int {

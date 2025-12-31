@@ -157,5 +157,20 @@
             }
         };
     </script>
+
+    <!-- Project Detail Modal -->
+    <script src="project-modal.js"></script>
+    <script>
+        // Initialize project modal with saved theme/lang
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedTheme = localStorage.getItem('portfolio_theme') || 'dark';
+            var savedLang = localStorage.getItem('portfolio_lang') || 'es';
+
+            if (window.projectModal) {
+                window.projectModal.setTheme(savedTheme);
+                window.projectModal.setLang(savedLang);
+            }
+        });
+    </script>
 </body>
 </html>
