@@ -209,7 +209,12 @@ object AIProjectsData {
                     "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions como middleware)\nAutomatización: Docker + n8n en Synology NAS (alertas diarias/semanales)\nIA Análisis: Gemini 2.0 Flash (fundamentales + gráficos)\nIA Noticias: Perplexity AI (sonar-pro)\nSeguridad: Cloud Functions validan y protegen todas las APIs\nDespliegue: Vercel + Firebase",
                     "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions as middleware)\nAutomation: Docker + n8n on Synology NAS (daily/weekly alerts)\nAI Analysis: Gemini 2.0 Flash (fundamentals + charts)\nAI News: Perplexity AI (sonar-pro)\nSecurity: Cloud Functions validate and protect all APIs\nDeployment: Vercel + Firebase"
                 ),
-                screenshots = emptyList(),
+                screenshots = listOf(
+                    "images/projects/portfolio-and-stock-dashboard.png",
+                    "images/projects/portfolio-and-stock-cartera.png",
+                    "images/projects/portfolio-and-stock-stock.png",
+                    "images/projects/portfolio-and-stock-informe.png"
+                ),
                 keyHighlights = listOf(
                     L("Alertas automáticas: precios objetivo y análisis de movimientos vía n8n + Docker", "Automated alerts: target prices and movement analysis via n8n + Docker"),
                     L("Arquitectura segura: Cloud Functions como middleware protegiendo APIs", "Secure architecture: Cloud Functions as middleware protecting APIs"),
@@ -220,7 +225,7 @@ object AIProjectsData {
                     L("Dashboard multi-broker con P&L en tiempo real y multi-divisa", "Multi-broker dashboard with real-time P&L and multi-currency"),
                     L("IA busca noticias relevantes para explicar movimientos significativos", "AI searches relevant news to explain significant movements")
                 ),
-                videoPlaceholder = true
+                videoPlaceholder = false
             )
         ),
         AIProject(
