@@ -42,6 +42,7 @@ import components.LocalScrollPosition
 import components.LocalViewportHeight
 import components.AnimatedSection
 import components.AnimationType
+import components.LazySection
 
 // Screen size breakpoints
 val LocalScreenWidth = compositionLocalOf { 1920 }
@@ -207,45 +208,53 @@ fun App() {
                         SectionPresentation()
                     }
 
-                    // Evolution with slide up animation
-                    AnimatedSection(
-                        animationType = AnimationType.SLIDE_UP,
-                        delay = 100,
-                        modifier = Modifier.onGloballyPositioned { coordinates ->
-                            updateSectionPosition("career", coordinates.positionInRoot().y.toInt())
+                    // Evolution - lazy loaded (below fold)
+                    LazySection(minHeight = 600.dp) {
+                        AnimatedSection(
+                            animationType = AnimationType.SLIDE_UP,
+                            delay = 100,
+                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                updateSectionPosition("career", coordinates.positionInRoot().y.toInt())
+                            }
+                        ) {
+                            SectionEvolution()
                         }
-                    ) {
-                        SectionEvolution()
                     }
 
-                    // AI Projects with scale animation
-                    AnimatedSection(
-                        animationType = AnimationType.SCALE_IN,
-                        modifier = Modifier.onGloballyPositioned { coordinates ->
-                            updateSectionPosition("projects", coordinates.positionInRoot().y.toInt())
+                    // AI Projects - lazy loaded (below fold)
+                    LazySection(minHeight = 800.dp) {
+                        AnimatedSection(
+                            animationType = AnimationType.SCALE_IN,
+                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                updateSectionPosition("projects", coordinates.positionInRoot().y.toInt())
+                            }
+                        ) {
+                            SectionAIProjects()
                         }
-                    ) {
-                        SectionAIProjects()
                     }
 
-                    // Skills with slide up animation
-                    AnimatedSection(
-                        animationType = AnimationType.SLIDE_UP,
-                        modifier = Modifier.onGloballyPositioned { coordinates ->
-                            updateSectionPosition("skills", coordinates.positionInRoot().y.toInt())
+                    // Skills - lazy loaded (below fold)
+                    LazySection(minHeight = 500.dp) {
+                        AnimatedSection(
+                            animationType = AnimationType.SLIDE_UP,
+                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                updateSectionPosition("skills", coordinates.positionInRoot().y.toInt())
+                            }
+                        ) {
+                            SectionSkills()
                         }
-                    ) {
-                        SectionSkills()
                     }
 
-                    // Contact with fade in animation
-                    AnimatedSection(
-                        animationType = AnimationType.FADE_IN,
-                        modifier = Modifier.onGloballyPositioned { coordinates ->
-                            updateSectionPosition("contact", coordinates.positionInRoot().y.toInt())
+                    // Contact - lazy loaded (below fold)
+                    LazySection(minHeight = 400.dp) {
+                        AnimatedSection(
+                            animationType = AnimationType.FADE_IN,
+                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                updateSectionPosition("contact", coordinates.positionInRoot().y.toInt())
+                            }
+                        ) {
+                            SectionContact()
                         }
-                    ) {
-                        SectionContact()
                     }
                 }
 

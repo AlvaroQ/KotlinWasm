@@ -210,10 +210,10 @@ object AIProjectsData {
                     "Frontend: Next.js 15 App Router + React Server Components\nUI: TailwindCSS + Shadcn/ui + TradingView Charts\nBackend: Firebase (Auth, Firestore, Cloud Functions as middleware)\nAutomation: Docker + n8n on Synology NAS (daily/weekly alerts)\nAI Analysis: Gemini 2.0 Flash (fundamentals + charts)\nAI News: Perplexity AI (sonar-pro)\nSecurity: Cloud Functions validate and protect all APIs\nDeployment: Vercel + Firebase"
                 ),
                 screenshots = listOf(
-                    "images/projects/portfolio-and-stock-dashboard.png",
-                    "images/projects/portfolio-and-stock-cartera.png",
-                    "images/projects/portfolio-and-stock-stock.png",
-                    "images/projects/portfolio-and-stock-informe.png"
+                    "images/projects/portfolio-and-stock-dashboard.webp",
+                    "images/projects/portfolio-and-stock-cartera.webp",
+                    "images/projects/portfolio-and-stock-stock.webp",
+                    "images/projects/portfolio-and-stock-informe.webp"
                 ),
                 keyHighlights = listOf(
                     L("Alertas automáticas: precios objetivo y análisis de movimientos vía n8n + Docker", "Automated alerts: target prices and movement analysis via n8n + Docker"),
@@ -255,7 +255,7 @@ object AIProjectsData {
                     "Frontend: Widget JS embebido en portfolio\nBackend: Cloudflare Workers (Edge Computing)\nVector DB: Cloudflare Vectorize\nLLM: Llama 3.1 via Workers AI\nEmbeddings: BGE-base-en-v1.5\nDatos: Markdown con CV, proyectos y skills",
                     "Frontend: JS widget embedded in portfolio\nBackend: Cloudflare Workers (Edge Computing)\nVector DB: Cloudflare Vectorize\nLLM: Llama 3.1 via Workers AI\nEmbeddings: BGE-base-en-v1.5\nData: Markdown with CV, projects and skills"
                 ),
-                screenshots = listOf("images/projects/rag-chatbot.png"),
+                screenshots = listOf("images/projects/rag-chatbot.webp"),
                 keyHighlights = listOf(
                     L("Latencia <500ms gracias a edge computing", "Latency <500ms thanks to edge computing"),
                     L("Coste $0 - 100% en free tier de Cloudflare", "Cost $0 - 100% on Cloudflare free tier"),
@@ -290,7 +290,7 @@ object AIProjectsData {
                     "UI: Python + Tkinter (cross-platform)\nTTS Engine: Kokoro-82M (neural voices)\nTranslation: NLLB-200 (Meta AI)\nOptimización: ONNX Runtime para inferencia rápida\nFormatos: PDF, DOCX, TXT, EPUB",
                     "UI: Python + Tkinter (cross-platform)\nTTS Engine: Kokoro-82M (neural voices)\nTranslation: NLLB-200 (Meta AI)\nOptimization: ONNX Runtime for fast inference\nFormats: PDF, DOCX, TXT, EPUB"
                 ),
-                screenshots = listOf("images/projects/translation-and-voice-locally.jpg"),
+                screenshots = listOf("images/projects/translation-and-voice-locally.webp"),
                 keyHighlights = listOf(
                     L("Voces neurales indistinguibles de humanos", "Neural voices indistinguishable from humans"),
                     L("Traduce entre 200+ idiomas antes de sintetizar", "Translates between 200+ languages before synthesis"),
@@ -325,7 +325,7 @@ object AIProjectsData {
                     "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrquestación: API Routes con streaming\nDespliegue: Vercel Edge Functions",
                     "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrchestration: API Routes with streaming\nDeployment: Vercel Edge Functions"
                 ),
-                screenshots = listOf("images/projects/chart-analyzer-and-stock-news.png"),
+                screenshots = listOf("images/projects/chart-analyzer-and-stock-news.webp"),
                 keyHighlights = listOf(
                     L("Análisis multimodal: texto (noticias) + visión (gráficos)", "Multimodal analysis: text (news) + vision (charts)"),
                     L("Streaming de respuestas para UX fluida", "Response streaming for fluid UX"),
@@ -362,8 +362,8 @@ object AIProjectsData {
                     "UI: Compose Multiplatform (Android + Desktop)\nOCR: PaddleOCR Lite optimized for mobile\nInference: ONNX Runtime for cross-platform\nDB: SQLDelight (type-safe SQL)\nDI: Koin Multiplatform\nAsync: Kotlin Coroutines + Flow"
                 ),
                 screenshots = listOf(
-                    "images/projects/lotto-scan-camera.jpg",
-                    "images/projects/lotto-scan-preview.jpg"
+                    "images/projects/lotto-scan-camera.webp",
+                    "images/projects/lotto-scan-preview.webp"
                 ),
                 keyHighlights = listOf(
                     L("KMP real: mismo código en Android y Desktop", "Real KMP: same code on Android and Desktop"),
