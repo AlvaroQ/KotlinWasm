@@ -19,6 +19,9 @@ class ProjectDetailModal {
     // Focus trap state
     this.previouslyFocusedElement = null;
 
+    // Flag to prevent modal close when lightbox is closing
+    this.isClosingLightbox = false;
+
     // Bind popstate handler for browser back button
     this.popstateHandler = this.handlePopstate.bind(this);
     window.addEventListener('popstate', this.popstateHandler);
@@ -541,6 +544,14 @@ class ProjectDetailModal {
         transition: none;
       }
 
+      #screenshot-lightbox .lightbox-img-container.zooming {
+        transition: none;
+      }
+
+      #screenshot-lightbox .lightbox-img-container.zoomed {
+        cursor: move;
+      }
+
       #screenshot-lightbox img {
         max-width: 90vw;
         max-height: 90vh;
@@ -548,6 +559,7 @@ class ProjectDetailModal {
         border-radius: 8px;
         box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
         pointer-events: none;
+        transform-origin: center center;
       }
 
       #screenshot-lightbox.open .lightbox-img-container {
@@ -747,9 +759,12 @@ class ProjectDetailModal {
   handlePopstate(event) {
     if (this.lightboxOpen) {
       this.closeLightbox(false); // Don't manipulate history, we're handling popstate
-    } else if (this.isOpen) {
+    } else if (this.isOpen && !this.isClosingLightbox) {
+      // Only close modal if we're not in the middle of closing the lightbox
       this.close(false); // Don't manipulate history, we're handling popstate
     }
+    // Reset the flag after handling
+    this.isClosingLightbox = false;
   }
 
   open(projectData) {
@@ -1096,6 +1111,9 @@ class ProjectDetailModal {
     // Setup swipe to close (mobile)
     this.setupSwipeToClose(lightbox, imgContainer);
 
+    // Setup pinch-to-zoom (mobile)
+    this.setupPinchZoom(lightbox, imgContainer);
+
     // Close on click on backdrop (not on image container)
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
@@ -1215,6 +1233,11 @@ class ProjectDetailModal {
     let isDragging = false;
 
     const onTouchStart = (e) => {
+      // Don't start swipe if using 2 fingers (pinch) or if zoomed
+      if (e.touches.length > 1 || imgContainer.classList.contains('zoomed')) {
+        isDragging = false;
+        return;
+      }
       startY = e.touches[0].clientY;
       currentY = startY;
       isDragging = true;
@@ -1222,6 +1245,22 @@ class ProjectDetailModal {
     };
 
     const onTouchMove = (e) => {
+      // Don't interfere when zoomed - let pinchZoom handle it
+      if (imgContainer.classList.contains('zoomed')) {
+        return;
+      }
+      // Cancel swipe if second finger added (pinch starting)
+      if (e.touches.length > 1) {
+        if (isDragging) {
+          // Only reset if we were actually dragging
+          isDragging = false;
+          imgContainer.classList.remove('dragging');
+          imgContainer.style.transform = '';
+          imgContainer.style.opacity = '';
+          lightbox.style.background = '';
+        }
+        return;
+      }
       if (!isDragging) return;
       currentY = e.touches[0].clientY;
       const deltaY = currentY - startY;
@@ -1259,7 +1298,165 @@ class ProjectDetailModal {
     imgContainer.addEventListener('touchcancel', onTouchEnd);
   }
 
+  setupPinchZoom(lightbox, imgContainer) {
+    const img = imgContainer.querySelector('img');
+    let initialDistance = 0;
+    let currentScale = 1;
+    let startScale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let startX = 0;
+    let startY = 0;
+    let isPinching = false;
+    let isPanning = false;
+    // Store base image size (without zoom) for pan limits
+    let baseWidth = 0;
+    let baseHeight = 0;
+
+    const getDistance = (touches) => {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    const getCenter = (touches) => {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2
+      };
+    };
+
+    const updateTransform = () => {
+      img.style.transform = `scale(${currentScale}) translate(${translateX / currentScale}px, ${translateY / currentScale}px)`;
+    };
+
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        // Pinch start - capture base size before any zoom
+        if (currentScale === 1) {
+          const rect = img.getBoundingClientRect();
+          baseWidth = rect.width;
+          baseHeight = rect.height;
+        }
+        isPinching = true;
+        isPanning = false;
+        initialDistance = getDistance(e.touches);
+        startScale = currentScale;
+        imgContainer.classList.add('zooming');
+        imgContainer.classList.remove('dragging');
+      } else if (e.touches.length === 1 && currentScale > 1) {
+        // Pan start (only when zoomed)
+        isPanning = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+        imgContainer.classList.add('zooming');
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (isPinching && e.touches.length === 2) {
+        e.preventDefault();
+        const distance = getDistance(e.touches);
+        const scale = (distance / initialDistance) * startScale;
+        currentScale = Math.min(Math.max(scale, 1), 4); // Limit zoom 1x-4x
+
+        if (currentScale === 1) {
+          translateX = 0;
+          translateY = 0;
+          imgContainer.classList.remove('zoomed');
+        } else {
+          imgContainer.classList.add('zoomed');
+        }
+
+        updateTransform();
+      } else if (isPanning && e.touches.length === 1 && currentScale > 1) {
+        e.preventDefault();
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+
+        // Limit panning based on how much the scaled image exceeds viewport
+        // The extra visible area on each side is: (scaledSize - baseSize) / 2
+        const extraX = (baseWidth * currentScale - baseWidth) / 2;
+        const extraY = (baseHeight * currentScale - baseHeight) / 2;
+        // Divide by currentScale because translate is applied after scale
+        const maxPanX = extraX / currentScale;
+        const maxPanY = extraY / currentScale;
+
+        translateX = Math.min(Math.max(translateX, -maxPanX), maxPanX);
+        translateY = Math.min(Math.max(translateY, -maxPanY), maxPanY);
+
+        updateTransform();
+      }
+    };
+
+    const onTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        isPinching = false;
+      }
+      if (e.touches.length === 0) {
+        isPanning = false;
+        imgContainer.classList.remove('zooming');
+
+        // Reset if zoomed out completely
+        if (currentScale <= 1) {
+          currentScale = 1;
+          translateX = 0;
+          translateY = 0;
+          img.style.transform = '';
+          imgContainer.classList.remove('zoomed');
+        }
+      }
+    };
+
+    // Double tap to zoom
+    let lastTap = 0;
+    const onDoubleTap = (e) => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        e.preventDefault();
+        if (currentScale > 1) {
+          // Reset zoom
+          currentScale = 1;
+          translateX = 0;
+          translateY = 0;
+          img.style.transform = '';
+          imgContainer.classList.remove('zoomed');
+        } else {
+          // Capture base size before zoom
+          const rect = img.getBoundingClientRect();
+          baseWidth = rect.width;
+          baseHeight = rect.height;
+          // Zoom to 2x
+          currentScale = 2;
+          imgContainer.classList.add('zoomed');
+          updateTransform();
+        }
+      }
+      lastTap = now;
+    };
+
+    imgContainer.addEventListener('touchstart', onTouchStart, { passive: false });
+    imgContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+    imgContainer.addEventListener('touchend', onTouchEnd);
+    imgContainer.addEventListener('touchcancel', onTouchEnd);
+    imgContainer.addEventListener('click', onDoubleTap);
+
+    // Store cleanup function
+    this.pinchZoomCleanup = () => {
+      imgContainer.removeEventListener('touchstart', onTouchStart);
+      imgContainer.removeEventListener('touchmove', onTouchMove);
+      imgContainer.removeEventListener('touchend', onTouchEnd);
+      imgContainer.removeEventListener('touchcancel', onTouchEnd);
+      imgContainer.removeEventListener('click', onDoubleTap);
+    };
+  }
+
   closeLightbox(updateHistory = true) {
+    // Clean up pinch zoom
+    if (this.pinchZoomCleanup) {
+      this.pinchZoomCleanup();
+      this.pinchZoomCleanup = null;
+    }
     // Clean up keyboard handler
     if (this.lightboxKeyHandler) {
       document.removeEventListener('keydown', this.lightboxKeyHandler);
@@ -1281,6 +1478,8 @@ class ProjectDetailModal {
 
     // Go back in history if we pushed a state (not when handling popstate)
     if (updateHistory) {
+      // Set flag to prevent modal from closing when popstate fires
+      this.isClosingLightbox = true;
       history.back();
     }
   }
