@@ -33,6 +33,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import personalpage.composeapp.generated.resources.Res
 import personalpage.composeapp.generated.resources.business_front
+import personalpage.composeapp.generated.resources.github_logo
+import org.jetbrains.compose.resources.DrawableResource
 import theme.CyberpunkThemeColors
 import i18n.Strings
 import androidx.compose.foundation.clickable
@@ -97,6 +99,7 @@ fun SectionPresentation() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .widthIn(max = 1100.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(CyberpunkThemeColors.card)
                     .border(
@@ -210,7 +213,7 @@ private fun PresentationBioContent(isMobile: Boolean = false) {
                         text = "GitHub",
                         url = "github.com/AlvaroQ",
                         color = CyberpunkThemeColors.textPrimary,
-                        icon = Icons.Filled.Build
+                        imageRes = Res.drawable.github_logo
                     )
                 }
 
@@ -460,7 +463,14 @@ private fun TechBadge(text: String, color: Color) {
 }
 
 @Composable
-private fun SocialLinkButton(text: String, url: String, color: Color, icon: ImageVector? = null) {
+@OptIn(ExperimentalResourceApi::class)
+private fun SocialLinkButton(
+    text: String,
+    url: String,
+    color: Color,
+    icon: ImageVector? = null,
+    imageRes: DrawableResource? = null
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val fullUrl = if (url.startsWith("http")) url else "https://$url"
@@ -479,7 +489,13 @@ private fun SocialLinkButton(text: String, url: String, color: Color, icon: Imag
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (icon != null) {
+            if (imageRes != null) {
+                Image(
+                    painter = painterResource(imageRes),
+                    contentDescription = text,
+                    modifier = Modifier.size(18.dp)
+                )
+            } else if (icon != null) {
                 Icon(
                     imageVector = icon,
                     contentDescription = text,

@@ -136,14 +136,20 @@ class ProjectDetailModal {
 
       #project-modal-overlay.dark #project-modal-content {
         background: #12121A;
-        border: 1px solid var(--accent-color-border);
         box-shadow: 0 0 40px var(--accent-color-dim);
       }
 
       #project-modal-overlay.light #project-modal-content {
         background: #FFFFFF;
-        border: 1px solid var(--accent-color-border);
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Border only on mobile */
+      @media (max-width: 600px) {
+        #project-modal-overlay.dark #project-modal-content,
+        #project-modal-overlay.light #project-modal-content {
+          border: 1px solid var(--accent-color-border);
+        }
       }
 
       .modal-header {
@@ -255,20 +261,12 @@ class ProjectDetailModal {
         cursor: pointer;
         padding: 0;
         line-height: 1;
-        transition: transform 0.2s, opacity 0.2s;
-        opacity: 0.7;
-      }
-
-      #project-modal-overlay.dark .modal-close {
-        color: #E0E0E0;
-      }
-
-      #project-modal-overlay.light .modal-close {
-        color: #333333;
+        transition: transform 0.2s, color 0.2s;
+        color: var(--accent-color-border);
       }
 
       .modal-close:hover {
-        opacity: 1;
+        color: var(--accent-color);
         transform: scale(1.1);
       }
 
@@ -279,6 +277,28 @@ class ProjectDetailModal {
         display: flex;
         flex-direction: column;
         gap: 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-color-border) transparent;
+      }
+
+      /* Custom scrollbar for Webkit browsers */
+      .modal-body::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 4px;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb {
+        background: var(--accent-color-border);
+        border-radius: 4px;
+        transition: background 0.2s;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-color);
       }
 
       .modal-section {
@@ -351,7 +371,6 @@ class ProjectDetailModal {
         min-height: 180px;
         border-radius: 8px;
         overflow: hidden;
-        border: 1px solid var(--accent-color-border);
       }
 
       .modal-screenshot-skeleton {

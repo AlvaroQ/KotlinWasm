@@ -301,39 +301,37 @@ object AIProjectsData {
             )
         ),
         AIProject(
-            title = "Chart Analyzer",
-            subtitle = L("Inteligencia de Mercado en Tiempo Real", "Real-time Market Intelligence"),
+            title = "Web Scraper Pro",
+            subtitle = L("Scraper con Anti-Detección", "Scraper with Anti-Detection"),
             description = L(
-                "Plataforma full-stack que integra agentes IA para análisis financiero. Combina búsqueda de noticias con análisis técnico de gráficos para inversores.",
-                "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors."
+                "Web scraper moderno con capacidades anti-detección. Captura páginas renderizadas con JavaScript y exporta a PDF, HTML, TXT o JSON. Construido con FastAPI, Playwright y Camoufox para sitios protegidos.",
+                "Modern web scraper with anti-detection capabilities. Captures JavaScript-rendered pages and exports to PDF, HTML, TXT, or JSON. Built with FastAPI, Playwright, and Camoufox fallback for bot-protected sites."
             ),
             features = listOf(
-                L("Noticias IA en Tiempo Real", "Real-time News AI"),
-                L("Análisis de Gráficos", "Chart Analysis"),
-                L("Detección de Patrones", "Pattern Detection"),
-                L("Indicadores Técnicos", "Technical Indicators")
+                L("Anti-Detección", "Anti-Detection"),
+                L("Renderizado JS", "JS Rendering"),
+                L("Multi-Formato Export", "Multi-Format Export"),
+                L("Camoufox Fallback", "Camoufox Fallback")
             ),
-            techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
-            accentColor = CyberpunkColors.NeonGreen,
-            githubUrl = "https://github.com/AlvaroQ/chart-analyzer-and-stock-news",
+            techStack = listOf("Python", "FastAPI", "Playwright", "Camoufox", "Docker"),
+            accentColor = CyberpunkColors.NeonPurple,
+            githubUrl = "https://github.com/AlvaroQ/web-scraper",
             detailedInfo = ProjectDetails(
                 longDescription = L(
-                    "Como inversor activo, necesitaba una herramienta que combinara análisis técnico con contexto de noticias en tiempo real. Este proyecto orquesta dos agentes IA: uno busca y resume noticias financieras relevantes usando Perplexity AI, mientras que otro analiza capturas de gráficos con Gemini 2.0 para identificar patrones técnicos, niveles de soporte/resistencia y señales de trading.",
-                    "As an active investor, I needed a tool that combined technical analysis with real-time news context. This project orchestrates two AI agents: one searches and summarizes relevant financial news using Perplexity AI, while another analyzes chart screenshots with Gemini 2.0 to identify technical patterns, support/resistance levels, and trading signals."
+                    "Herramienta profesional de web scraping diseñada para extraer contenido de sitios web modernos que usan JavaScript para renderizar contenido. Incluye sistema de anti-detección con Camoufox como fallback para sitios con protección contra bots, permitiendo extraer datos de forma fiable.",
+                    "Professional web scraping tool designed to extract content from modern websites that use JavaScript to render content. Includes anti-detection system with Camoufox as fallback for bot-protected sites, enabling reliable data extraction."
                 ),
                 architecture = L(
-                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrquestación: API Routes con streaming\nDespliegue: Vercel Edge Functions",
-                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrchestration: API Routes with streaming\nDeployment: Vercel Edge Functions"
+                    "Backend: Python + FastAPI\nScraping: Playwright (headless browser)\nAnti-bot: Camoufox (Firefox stealth)\nExport: PDF, HTML, TXT, JSON\nDespliegue: Docker containerizado",
+                    "Backend: Python + FastAPI\nScraping: Playwright (headless browser)\nAnti-bot: Camoufox (Firefox stealth)\nExport: PDF, HTML, TXT, JSON\nDeployment: Docker containerized"
                 ),
-                screenshots = listOf("images/projects/chart-analyzer-and-stock-news.webp"),
+                screenshots = listOf("images/projects/scrapper_pro_preview.webp"),
                 keyHighlights = listOf(
-                    L("Análisis multimodal: texto (noticias) + visión (gráficos)", "Multimodal analysis: text (news) + vision (charts)"),
-                    L("Streaming de respuestas para UX fluida", "Response streaming for fluid UX"),
-                    L("Detecta patrones: head & shoulders, triángulos, canales", "Detects patterns: head & shoulders, triangles, channels"),
-                    L("Correlaciona noticias con movimientos de precio", "Correlates news with price movements"),
-                    L("100% TypeScript con tipos estrictos", "100% TypeScript with strict types")
-                ),
-                demoUrl = "https://project-ia-three.vercel.app/"
+                    L("Captura páginas con contenido renderizado por JavaScript", "Captures pages with JavaScript-rendered content"),
+                    L("Sistema anti-detección con Camoufox para sitios protegidos", "Anti-detection system with Camoufox for protected sites"),
+                    L("Exportación a múltiples formatos: PDF, HTML, TXT, JSON", "Export to multiple formats: PDF, HTML, TXT, JSON"),
+                    L("Arquitectura containerizada con Docker", "Containerized architecture with Docker")
+                )
             )
         ),
         AIProject(
@@ -372,6 +370,76 @@ object AIProjectsData {
                     L("Historial de boletos con SQLDelight", "Ticket history with SQLDelight"),
                     L("Comprobación automática de premios", "Automatic prize checking")
                 )
+            )
+        ),
+        AIProject(
+            title = "YouTube Downloader",
+            subtitle = L("Descargador con Resúmenes IA", "Downloader with AI Summaries"),
+            description = L(
+                "Descargador de YouTube moderno con resúmenes de video generados por IA. Interfaz glassmorphism, extracción de video/audio y soporte multi-proveedor IA (Perplexity).",
+                "Modern YouTube downloader with AI-powered video summaries. Features a glassmorphism UI, video/audio extraction, and multi-provider AI support (Perplexity)."
+            ),
+            features = listOf(
+                L("Resúmenes con IA", "AI Summaries"),
+                L("Extracción Video/Audio", "Video/Audio Extraction"),
+                L("UI Glassmorphism", "Glassmorphism UI"),
+                L("Multi-Formato", "Multi-Format")
+            ),
+            techStack = listOf("Python", "FastAPI", "Perplexity AI", "JavaScript", "HTML/CSS"),
+            accentColor = CyberpunkColors.NeonPink,
+            githubUrl = "https://github.com/AlvaroQ/youtube-downloader",
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Herramienta de escritorio que combina descarga de contenido de YouTube con análisis inteligente mediante IA. Permite extraer video o solo audio en múltiples formatos y calidades, mientras que el sistema de IA genera resúmenes automáticos del contenido usando Perplexity AI.",
+                    "Desktop tool that combines YouTube content downloading with intelligent AI analysis. Allows extracting video or audio only in multiple formats and qualities, while the AI system generates automatic content summaries using Perplexity AI."
+                ),
+                architecture = L(
+                    "Backend: Python + FastAPI\nDescarga: yt-dlp\nIA: Perplexity AI para resúmenes\nFrontend: HTML/CSS/JavaScript con glassmorphism\nFormatos: MP4, MP3, WebM, múltiples calidades",
+                    "Backend: Python + FastAPI\nDownload: yt-dlp\nAI: Perplexity AI for summaries\nFrontend: HTML/CSS/JavaScript with glassmorphism\nFormats: MP4, MP3, WebM, multiple qualities"
+                ),
+                screenshots = listOf("images/projects/youtube_downloader_preview.webp"),
+                keyHighlights = listOf(
+                    L("Resúmenes automáticos de videos con Perplexity AI", "Automatic video summaries with Perplexity AI"),
+                    L("Extracción de audio para podcasts y música", "Audio extraction for podcasts and music"),
+                    L("Interfaz moderna con efecto glassmorphism", "Modern interface with glassmorphism effect"),
+                    L("Soporte para múltiples formatos y calidades", "Support for multiple formats and qualities")
+                )
+            )
+        ),
+        AIProject(
+            title = "Chart Analyzer",
+            subtitle = L("Inteligencia de Mercado en Tiempo Real", "Real-time Market Intelligence"),
+            description = L(
+                "Plataforma full-stack que integra agentes IA para análisis financiero. Combina búsqueda de noticias con análisis técnico de gráficos para inversores.",
+                "Full-stack platform integrating AI agents for financial analysis. Combines news search with technical chart analysis for investors."
+            ),
+            features = listOf(
+                L("Noticias IA en Tiempo Real", "Real-time News AI"),
+                L("Análisis de Gráficos", "Chart Analysis"),
+                L("Detección de Patrones", "Pattern Detection"),
+                L("Indicadores Técnicos", "Technical Indicators")
+            ),
+            techStack = listOf("Next.js", "Perplexity AI", "Gemini 2.0", "TypeScript"),
+            accentColor = CyberpunkColors.NeonGreen,
+            githubUrl = "https://github.com/AlvaroQ/chart-analyzer-and-stock-news",
+            detailedInfo = ProjectDetails(
+                longDescription = L(
+                    "Como inversor activo, necesitaba una herramienta que combinara análisis técnico con contexto de noticias en tiempo real. Este proyecto orquesta dos agentes IA: uno busca y resume noticias financieras relevantes usando Perplexity AI, mientras que otro analiza capturas de gráficos con Gemini 2.0 para identificar patrones técnicos, niveles de soporte/resistencia y señales de trading.",
+                    "As an active investor, I needed a tool that combined technical analysis with real-time news context. This project orchestrates two AI agents: one searches and summarizes relevant financial news using Perplexity AI, while another analyzes chart screenshots with Gemini 2.0 to identify technical patterns, support/resistance levels, and trading signals."
+                ),
+                architecture = L(
+                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrquestación: API Routes con streaming\nDespliegue: Vercel Edge Functions",
+                    "Frontend: Next.js 14 App Router + TailwindCSS\nNews Agent: Perplexity AI API (sonar-pro)\nChart Agent: Gemini 2.0 Flash (vision)\nOrchestration: API Routes with streaming\nDeployment: Vercel Edge Functions"
+                ),
+                screenshots = listOf("images/projects/chart-analyzer-and-stock-news.webp"),
+                keyHighlights = listOf(
+                    L("Análisis multimodal: texto (noticias) + visión (gráficos)", "Multimodal analysis: text (news) + vision (charts)"),
+                    L("Streaming de respuestas para UX fluida", "Response streaming for fluid UX"),
+                    L("Detecta patrones: head & shoulders, triángulos, canales", "Detects patterns: head & shoulders, triangles, channels"),
+                    L("Correlaciona noticias con movimientos de precio", "Correlates news with price movements"),
+                    L("100% TypeScript con tipos estrictos", "100% TypeScript with strict types")
+                ),
+                demoUrl = "https://project-ia-three.vercel.app/"
             )
         )
     )

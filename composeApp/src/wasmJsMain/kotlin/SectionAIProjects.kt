@@ -46,7 +46,6 @@ import i18n.LocalizedString
 fun SectionAIProjects() {
     val screenWidth = LocalScreenWidth.current
     val isMobile = screenWidth < Breakpoints.MOBILE
-    val useColumnLayout = screenWidth < Breakpoints.WIDE
     val strings = Strings.get()
 
     val projects = AIProjectsData.projects
@@ -101,11 +100,11 @@ fun SectionAIProjects() {
 
         Spacer(modifier = Modifier.height(if (isMobile) 30.dp else 60.dp))
 
-        if (useColumnLayout) {
+        if (isMobile) {
+            // Mobile: 1 project per row
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = if (isMobile) 0.dp else 60.dp),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -127,27 +126,39 @@ fun SectionAIProjects() {
                 }
             }
         } else {
-            Row(
+            // Desktop/Tablet: 2 projects per row
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                projects.forEach { project ->
-                    AIProjectCard(
-                        modifier = Modifier.weight(1f),
-                        title = project.title,
-                        subtitle = project.subtitle,
-                        description = project.description,
-                        features = project.features,
-                        techStack = project.techStack,
-                        accentColor = project.accentColor,
-                        githubUrl = project.githubUrl,
-                        isLive = project.isLive,
-                        isPrivate = project.isPrivate,
-                        isFeatured = project.isFeatured,
-                        detailedInfo = project.detailedInfo
-                    )
+                projects.chunked(2).forEach { rowProjects ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        rowProjects.forEach { project ->
+                            AIProjectCard(
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                title = project.title,
+                                subtitle = project.subtitle,
+                                description = project.description,
+                                features = project.features,
+                                techStack = project.techStack,
+                                accentColor = project.accentColor,
+                                githubUrl = project.githubUrl,
+                                isLive = project.isLive,
+                                isPrivate = project.isPrivate,
+                                isFeatured = project.isFeatured,
+                                detailedInfo = project.detailedInfo
+                            )
+                        }
+                        // Add empty spacer if odd number of projects in last row
+                        if (rowProjects.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
                 }
             }
         }
